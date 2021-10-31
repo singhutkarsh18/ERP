@@ -14,14 +14,20 @@ public class StudentController {
     @Autowired
     StudentService studentService;
 
-    @PostMapping("/createStudent")
-    public void createStudent(@RequestBody Student student)
-    {
-        studentService.registerStudent(student);
-    }
-    @GetMapping("/loginStudent")
-    public Boolean loginStudent(@RequestBody Student student)
-    {
-        return studentService.loginValidation(student);
-    }
+//    @PostMapping("/createStudent")
+//    public void createStudent(@RequestBody Student student)
+//    {
+//        studentService.registerStudent(student);
+//    }
+//    @GetMapping("/loginStudent")
+//    public Boolean loginStudent(@RequestBody Student student)
+//    {
+//        return studentService.loginValidation(student);
+//    }
+//    @PostMapping("/forgotPassword")
+//    public void forgotPassword(@RequestBody Student student)
+//    {
+//
+//    }
+
 }

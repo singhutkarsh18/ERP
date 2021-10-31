@@ -12,9 +12,9 @@ public class Student {
     private Integer id;
     private String name;
     private String email;
-    private Boolean enabled;
+//    private Boolean enabled;
     private String password;
-    private String verification_code;
+//    private String verification_code;
 
     public String getPassword() {
         return password;
@@ -35,9 +35,9 @@ public class Student {
     public Student(String name, String email, Boolean enabled, String password, String verification_code) {
         this.name = name;
         this.email = email;
-        this.enabled = enabled;
+//        this.enabled = enabled;
         this.password = password;
-        this.verification_code = verification_code;
+//        this.verification_code = verification_code;
     }
 
     public void setId(Integer id) {
@@ -60,19 +60,19 @@ public class Student {
         this.email = email;
     }
 
-    public Boolean getEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public String getVerification_code() {
-        return verification_code;
-    }
-
-    public void setVerification_code(String verification_code) {
-        this.verification_code = verification_code;
-    }
+//    public Boolean getEnabled() {
+//        return enabled;
+//    }
+//
+//    public void setEnabled(Boolean enabled) {
+//        this.enabled = enabled;
+//    }
+//
+//    public String getVerification_code() {
+//        return verification_code;
+//    }
+//
+//    public void setVerification_code(String verification_code) {
+//        this.verification_code = verification_code;
+//    }
 }
