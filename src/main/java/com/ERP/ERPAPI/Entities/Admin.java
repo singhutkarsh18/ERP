@@ -8,12 +8,15 @@ import java.util.Objects;
 @Entity
 public class Admin {
 
+
+
     @Id
     @GeneratedValue
     private Integer id;
 
     private String email;
     private String password;
+
 
     public Admin(String email, String password) {
         this.email = email;
@@ -42,6 +45,7 @@ public class Admin {
     public String getPassword() {
         return password;
     }
+
 
     public void setPassword(String password) {
         this.password = password;
