@@ -25,5 +25,9 @@ public class StudentService {
         newStudent.setVerification_code(RandomString.make(64));
         repo.save(newStudent);
     }
+    public Boolean loginValidation(Student student)
+    {
+        
+    }
 
 }

@@ -8,8 +8,6 @@ import org.springframework.stereotype.Service;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-import org.springframework.stereotype.Service;
-
 import com.google.common.cache.LoadingCache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -29,7 +27,6 @@ public class OtpService {
         msg.setTo(mail.getRecipient());
         msg.setSubject(mail.getSubject());
         msg.setText(mail.getMessage());
-
         this.javaMailSender.send(msg);
     }
     private static final Integer EXPIRE_MINS = 5;
@@ -38,8 +35,7 @@ public class OtpService {
 
     public OtpService(){
         super();
-        otpCache = CacheBuilder.newBuilder().
-                expireAfterWrite(EXPIRE_MINS, TimeUnit.MINUTES).build(new CacheLoader<String, Integer>() {
+        otpCache = CacheBuilder.newBuilder().expireAfterWrite(EXPIRE_MINS, TimeUnit.MINUTES).build(new CacheLoader<String, Integer>() {
                     public Integer load(String key) {
                         return 0;
                     }
