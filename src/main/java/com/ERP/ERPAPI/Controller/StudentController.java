@@ -18,6 +18,9 @@ public class StudentController {
     {
         service.registerStudent(student);
     }
+    @PostMapping("/loginStudent")
+    public void loginStudent(@RequestBody Student student)
+    {
 
-
+    }
 }
