@@ -1,4 +1,4 @@
-package com.ERP.ERPAPI.Entities;
+package com.ERP.ERPAPI.Model;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

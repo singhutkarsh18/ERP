@@ -1,6 +1,6 @@
 package com.ERP.ERPAPI.Service;
 
-import com.ERP.ERPAPI.Entities.Admin;
+import com.ERP.ERPAPI.Model.Admin;
 import org.springframework.stereotype.Service;
 
 @Service

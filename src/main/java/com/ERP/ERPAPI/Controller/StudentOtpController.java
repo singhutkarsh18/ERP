@@ -1,7 +1,7 @@
 package com.ERP.ERPAPI.Controller;
 
-import com.ERP.ERPAPI.Entities.Mail;
-import com.ERP.ERPAPI.Entities.Student;
+import com.ERP.ERPAPI.Model.Mail;
+import com.ERP.ERPAPI.Model.Student;
 import com.ERP.ERPAPI.Repository.StudentRepository;
 import com.ERP.ERPAPI.Service.OtpService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,25 +23,30 @@ public class StudentOtpController {
     private PasswordEncoder passwordEncoder;
 
     @PostMapping("/createStudent")
-    public void sendOTP(@RequestBody Student student) throws MessagingException
+    public String sendOTP(@RequestBody Student student) throws MessagingException
     {
         newStudent.setId(student.getId());
         newStudent.setName(student.getName());
         newStudent.setEmail(student.getEmail());
-//        newStudent.setPassword(passwordEncoder.encode(student.getPassword()));
-        int otp=otpService.generateOTP(student.getEmail());
-        String message="OTP for ERP is "+otp;
-        mail.setRecipient(student.getEmail());
-        mail.setMessage(message);
-        mail.setSubject("OTP");
-        System.out.println(mail.getRecipient());
-        System.out.println(mail.getMessage());
-        otpService.sendMail(mail);
+        if(repo.existsAdminByEmail(student.getEmail())==false) {
+            int otp = otpService.generateOTP(student.getEmail());
+            String message = "OTP for ERP is " + otp;
+            mail.setRecipient(student.getEmail());
+            mail.setMessage(message);
+            mail.setSubject("OTP");
+            System.out.println(mail.getRecipient());
+            System.out.println(mail.getMessage());
+            otpService.sendMail(mail);
+            return "OTP Sent";
+        }
+        else
+        {
+            return "User already present";
+        }
     }
     @PostMapping("/forgotStudentPassword")
     public void forgotPassword(@RequestParam String email) throws MessagingException
     {
-//Check whether email is present in DB
         int otp=otpService.generateOTP(email);
         String message="OTP for ERP is "+otp;
         mail.setRecipient(email);
@@ -66,6 +71,7 @@ public class StudentOtpController {
                 {
                     validOtp=true;
                     repo.save(newStudent);
+                    otpService.clearOTP(mail.getRecipient());
                 }
                 else
                 {

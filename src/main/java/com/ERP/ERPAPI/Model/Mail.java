@@ -1,4 +1,4 @@
-package com.ERP.ERPAPI.Entities;
+package com.ERP.ERPAPI.Model;
 
 public class Mail {
     private String recipient;

@@ -1,6 +1,6 @@
 package com.ERP.ERPAPI.Service;
 
-import com.ERP.ERPAPI.Entities.Mail;
+import com.ERP.ERPAPI.Model.Mail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;

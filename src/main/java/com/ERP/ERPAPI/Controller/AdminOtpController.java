@@ -1,16 +1,16 @@
 package com.ERP.ERPAPI.Controller;
 
-import com.ERP.ERPAPI.Entities.Admin;
-import com.ERP.ERPAPI.Entities.Mail;
-import com.ERP.ERPAPI.Entities.Student;
+import com.ERP.ERPAPI.Model.Admin;
+import com.ERP.ERPAPI.Model.Mail;
 import com.ERP.ERPAPI.Repository.AdminRepository;
-import com.ERP.ERPAPI.Repository.StudentRepository;
 import com.ERP.ERPAPI.Service.OtpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class AdminOtpController {
@@ -25,31 +25,40 @@ public class AdminOtpController {
     private PasswordEncoder passwordEncoder;
 
     @PostMapping("/createAdmin")
-    public void sendOTP(@RequestBody Admin admin) throws MessagingException
+    public String sendOTP(@RequestBody Admin admin) throws MessagingException
     {
         newAdmin.setEmail(admin.getEmail());
-//        newAdmin.setPassword(passwordEncoder.encode(admin.getPassword()));
-        int otp=otpService.generateOTP(admin.getEmail());
-        String message="OTP for ERP is "+otp;
-        mail.setRecipient(admin.getEmail());
-        mail.setMessage(message);
-        mail.setSubject("OTP");
-        System.out.println(mail.getRecipient());
-        System.out.println(mail.getMessage());
-        otpService.sendMail(mail);
+
+        if(repo.existsAdminByEmail(admin.getEmail())==false) {
+            int otp = otpService.generateOTP(admin.getEmail());
+            System.out.println("OTP SENT");
+            String message = "OTP for ERP is " + otp;
+            mail.setRecipient(admin.getEmail());
+            mail.setMessage(message);
+            mail.setSubject("OTP");
+            System.out.println(mail.getRecipient());
+            System.out.println(mail.getMessage());
+            otpService.sendMail(mail);
+            return "OTP Sent";
+        }
+        else
+        {
+            return "User already present";
+        }
     }
     @PostMapping("/forgotAdminPassword")
     public void forgotPassword(@RequestParam String email) throws MessagingException
     {
-//Check whether email is present in DB
-        int otp=otpService.generateOTP(email);
-        String message="OTP for ERP is "+otp;
-        mail.setRecipient(email);
-        mail.setMessage(message);
-        mail.setSubject("OTP");
-        System.out.println(mail.getRecipient());
-        System.out.println(mail.getMessage());
-        otpService.sendMail(mail);
+
+            int otp = otpService.generateOTP(email);
+            System.out.println("OTP Sent");
+            String message = "OTP for ERP is " + otp;
+            mail.setRecipient(email);
+            mail.setMessage(message);
+            mail.setSubject("OTP");
+            System.out.println(mail.getRecipient());
+            System.out.println(mail.getMessage());
+            otpService.sendMail(mail);
     }
     @GetMapping("/validateAdminOtp")
     public @ResponseBody Boolean validateOtp(@RequestParam(name = "userOtp") Integer userOtp)
@@ -66,6 +75,7 @@ public class AdminOtpController {
                 {
                     validOtp=true;
                     repo.save(newAdmin);
+                    otpService.clearOTP(mail.getRecipient());
                 }
                 else
                 {
