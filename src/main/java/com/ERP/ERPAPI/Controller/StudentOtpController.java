@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.mail.MessagingException;
 
 @RestController
-public class OtpController {
+public class StudentOtpController {
 
     Student newStudent = new Student();
     Mail mail=new Mail();
@@ -38,7 +38,7 @@ public class OtpController {
         System.out.println(mail.getMessage());
         otpService.sendMail(mail);
     }
-    @PostMapping("/forgotPassword")
+    @PostMapping("/forgotStudentPassword")
     public void forgotPassword(@RequestParam String email) throws MessagingException
     {
 //Check whether email is present in DB
@@ -51,7 +51,7 @@ public class OtpController {
         System.out.println(mail.getMessage());
         otpService.sendMail(mail);
     }
-    @GetMapping("/validateOtp")
+    @GetMapping("/validateStudentOtp")
     public @ResponseBody Boolean validateOtp(@RequestParam(name = "userOtp") Integer userOtp)
     {
 
@@ -83,7 +83,7 @@ public class OtpController {
         }
         return validOtp;
     }
-    @GetMapping("/validateForgotPassword")
+    @GetMapping("/validateStudentForgotPassword")
     public Boolean validateForgotPassword(@RequestParam(name="userOtp") Integer userOtp)
     {
 
@@ -115,7 +115,7 @@ public class OtpController {
         }
         return validOtp;
     }
-    @PostMapping("/createNewPassword")
+    @PostMapping("/createStudentNewPassword")
     public void createNewPassword(@RequestParam String pass)
     {
         newStudent.setPassword(passwordEncoder.encode(pass));
