@@ -16,7 +16,7 @@ public class AdminController {
     @PostMapping("/admin/auth")
     public void checkAdmin(@RequestBody Admin admin)
     {
-        service.checkAuth(admin);
+//        service.checkAuth(admin);
     }
 
 }

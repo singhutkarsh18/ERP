@@ -5,6 +5,7 @@ import com.ERP.ERPAPI.Model.Student;
 import com.ERP.ERPAPI.Repository.StudentRepository;
 import com.ERP.ERPAPI.Service.OtpService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,6 +48,7 @@ public class StudentOtpController {
     @PostMapping("/forgotStudentPassword")
     public void forgotPassword(@RequestParam String email) throws MessagingException
     {
+
         int otp=otpService.generateOTP(email);
         String message="OTP for ERP is "+otp;
         mail.setRecipient(email);
@@ -70,7 +72,6 @@ public class StudentOtpController {
                 if(userOtp==generatedOtp)
                 {
                     validOtp=true;
-                    repo.save(newStudent);
                     otpService.clearOTP(mail.getRecipient());
                 }
                 else
@@ -122,9 +123,9 @@ public class StudentOtpController {
         return validOtp;
     }
     @PostMapping("/createStudentNewPassword")
-    public void createNewPassword(@RequestParam String pass)
+    public ResponseEntity<Student> createNewPassword(@RequestParam String pass)
     {
         newStudent.setPassword(passwordEncoder.encode(pass));
-        repo.save(newStudent);
+        return ResponseEntity.ok(repo.save(newStudent));
     }
 }
