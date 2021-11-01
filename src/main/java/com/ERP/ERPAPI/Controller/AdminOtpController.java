@@ -28,7 +28,7 @@ public class AdminOtpController {
     public void sendOTP(@RequestBody Admin admin) throws MessagingException
     {
         newAdmin.setEmail(admin.getEmail());
-        newAdmin.setPassword(passwordEncoder.encode(admin.getPassword()));
+//        newAdmin.setPassword(passwordEncoder.encode(admin.getPassword()));
         int otp=otpService.generateOTP(admin.getEmail());
         String message="OTP for ERP is "+otp;
         mail.setRecipient(admin.getEmail());

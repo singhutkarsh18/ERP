@@ -28,7 +28,7 @@ public class StudentOtpController {
         newStudent.setId(student.getId());
         newStudent.setName(student.getName());
         newStudent.setEmail(student.getEmail());
-        newStudent.setPassword(passwordEncoder.encode(student.getPassword()));
+//        newStudent.setPassword(passwordEncoder.encode(student.getPassword()));
         int otp=otpService.generateOTP(student.getEmail());
         String message="OTP for ERP is "+otp;
         mail.setRecipient(student.getEmail());
