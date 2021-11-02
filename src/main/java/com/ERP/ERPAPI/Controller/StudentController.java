@@ -12,12 +12,17 @@ public class StudentController {
     @Autowired
     StudentService studentService;
 
-    @GetMapping("/studentLogin")
-    public Boolean login(Student student)
+//    @GetMapping("/studentLogin")
+//    public Boolean login(Student student)
+//    {
+//        System.out.println(studentService.loginValidation(student));
+//        return studentService.loginValidation(student);
+//
+//    }
+    @GetMapping("/hello")
+    public String hello()
     {
-        System.out.println(studentService.loginValidation(student));
-        return studentService.loginValidation(student);
-
+        return "hello";
     }
 
 }

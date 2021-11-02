@@ -9,8 +9,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 public class AdminOtpController {
@@ -27,13 +25,13 @@ public class AdminOtpController {
     @PostMapping("/createAdmin")
     public String sendOTP(@RequestBody Admin admin) throws MessagingException
     {
-        newAdmin.setEmail(admin.getEmail());
+        newAdmin.setUsername(admin.getUsername());
 
-        if(repo.existsAdminByEmail(admin.getEmail())==false) {
-            int otp = otpService.generateOTP(admin.getEmail());
+        if(repo.existsAdminByUsername(admin.getUsername())==false) {
+            int otp = otpService.generateOTP(admin.getUsername());
             System.out.println("OTP SENT");
             String message = "OTP for ERP is " + otp;
-            mail.setRecipient(admin.getEmail());
+            mail.setRecipient(admin.getUsername());
             mail.setMessage(message);
             mail.setSubject("OTP");
             System.out.println(mail.getRecipient());

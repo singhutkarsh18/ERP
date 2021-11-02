@@ -1,6 +1,7 @@
 package com.ERP.ERPAPI.Security;
 
 import com.ERP.ERPAPI.JWT.JwtRequestFilter;
+import com.ERP.ERPAPI.JWT.JwtUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,6 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private JwtRequestFilter jwtRequestFilter;
 
+
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         // configure AuthenticationManager so that it knows from where to load
@@ -43,8 +45,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity security) throws Exception
     {
-        security.httpBasic().disable().csrf().disable().authorizeRequests().antMatchers("/studentLogin", "/createStudent","/forgotStudentPassword","/validateStudentOtp",
-                        "/validateStudentForgotPassword","/createStudentNewPassword","/h2-console/**").permitAll().
+        security.httpBasic().disable().csrf().disable().authorizeRequests().antMatchers( "/createStudent","/forgotStudentPassword","/validateStudentOtp",
+                        "/validateStudentForgotPassword","/createStudentNewPassword","/h2-console/**","/authenticateStudent").permitAll().
                 anyRequest().authenticated();
         security.headers().frameOptions().disable();
         security.exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()

@@ -5,6 +5,7 @@ import com.ERP.ERPAPI.Model.Admin;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AdminRepository extends JpaRepository<Admin,Integer> {
-    Boolean existsAdminByEmail(String email);
+    Boolean existsAdminByUsername(String username);
+    Admin findByUsername(String username);
 
 }

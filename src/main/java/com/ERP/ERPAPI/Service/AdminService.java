@@ -12,20 +12,20 @@ import java.util.List;
 @Service
 public class AdminService {
 
-    @Autowired
-    AdminRepository repo;
-    public Boolean loginValidation(Admin admin)
-    {
-//        List<Admin> admins = new ArrayList<>();
-//        students=repo.findAll();
-        boolean valid_pass=false;
-//        for(Student student1 : students)
-//        {
-//            if((student1.getEmail().equals(student.getEmail()))&&(passwordEncoder.matches(student.getPassword(),student1.getPassword())))
-//            {
-//                valid_pass=true;
-//            }
-//        }
-        return valid_pass;
-    }
+//    @Autowired
+//    AdminRepository repo;
+//    public Boolean loginValidation(Admin admin)
+//    {
+////        List<Admin> admins = new ArrayList<>();
+////        students=repo.findAll();
+////        boolean valid_pass=false;
+////        for(Student student1 : students)
+////        {
+////            if((student1.getEmail().equals(student.getEmail()))&&(passwordEncoder.matches(student.getPassword(),student1.getPassword())))
+////            {
+////                valid_pass=true;
+////            }
+////        }
+//        return valid_pass;
+//    }
 }

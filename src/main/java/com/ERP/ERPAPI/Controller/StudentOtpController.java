@@ -28,11 +28,11 @@ public class StudentOtpController {
     {
         newStudent.setId(student.getId());
         newStudent.setName(student.getName());
-        newStudent.setEmail(student.getEmail());
-        if(repo.existsAdminByEmail(student.getEmail())==false) {
-            int otp = otpService.generateOTP(student.getEmail());
+        newStudent.setUsername(student.getUsername());
+        if(repo.existsStudentByUsername(student.getUsername())==false) {
+            int otp = otpService.generateOTP(student.getUsername());
             String message = "OTP for ERP is " + otp;
-            mail.setRecipient(student.getEmail());
+            mail.setRecipient(student.getUsername());
             mail.setMessage(message);
             mail.setSubject("OTP");
             System.out.println(mail.getRecipient());

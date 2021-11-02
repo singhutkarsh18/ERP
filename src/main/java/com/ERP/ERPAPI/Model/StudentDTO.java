@@ -3,7 +3,7 @@ package com.ERP.ERPAPI.Model;
 public class StudentDTO {
 
     private String name;
-    private String email;
+    private String username;
 
     public String getName() {
         return name;
@@ -13,11 +13,11 @@ public class StudentDTO {
         this.name = name;
     }
 
-    public String getEmail() {
-        return email;
+    public String getUsername() {
+        return username;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setEmail(String username) {
+        this.username = username;
     }
 }
