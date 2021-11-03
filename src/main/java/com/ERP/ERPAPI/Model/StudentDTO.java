@@ -4,6 +4,7 @@ public class StudentDTO {
 
     private String name;
     private String username;
+    private String password;
 
     public String getName() {
         return name;
@@ -20,4 +21,5 @@ public class StudentDTO {
     public void setEmail(String username) {
         this.username = username;
     }
+
 }

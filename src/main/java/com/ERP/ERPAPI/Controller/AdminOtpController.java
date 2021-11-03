@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.mail.MessagingException;
 
 @RestController
+@CrossOrigin(origins = "*")
 public class AdminOtpController {
 
     Admin newAdmin = new Admin();

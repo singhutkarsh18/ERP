@@ -4,17 +4,20 @@ import com.ERP.ERPAPI.Model.Mail;
 import com.ERP.ERPAPI.Model.Student;
 import com.ERP.ERPAPI.Repository.StudentRepository;
 import com.ERP.ERPAPI.Service.OtpService;
+import com.ERP.ERPAPI.Service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @RestController
+@CrossOrigin(origins = "*")
 public class StudentOtpController {
 
-    Student newStudent = new Student();
     Mail mail=new Mail();
     @Autowired
     StudentRepository repo;
@@ -22,110 +25,31 @@ public class StudentOtpController {
     private OtpService otpService;
     @Autowired
     private PasswordEncoder passwordEncoder;
-
+    @Autowired
+    StudentService studentService;
     @PostMapping("/createStudent")
     public String sendOTP(@RequestBody Student student) throws MessagingException
     {
-        newStudent.setId(student.getId());
-        newStudent.setName(student.getName());
-        newStudent.setUsername(student.getUsername());
-        if(repo.existsStudentByUsername(student.getUsername())==false) {
-            int otp = otpService.generateOTP(student.getUsername());
-            String message = "OTP for ERP is " + otp;
-            mail.setRecipient(student.getUsername());
-            mail.setMessage(message);
-            mail.setSubject("OTP");
-            System.out.println(mail.getRecipient());
-            System.out.println(mail.getMessage());
-            otpService.sendMail(mail);
-            return "OTP Sent";
-        }
-        else
-        {
-            return "User already present";
-        }
+        return studentService.create(student);
     }
+
     @PostMapping("/forgotStudentPassword")
-    public void forgotPassword(@RequestParam String email) throws MessagingException
+    public String forgotPassword(@RequestBody Student studentU) throws MessagingException
     {
-
-        int otp=otpService.generateOTP(email);
-        String message="OTP for ERP is "+otp;
-        mail.setRecipient(email);
-        mail.setMessage(message);
-        mail.setSubject("OTP");
-        System.out.println(mail.getRecipient());
-        System.out.println(mail.getMessage());
-        otpService.sendMail(mail);
+        return studentService.forgot(studentU);
     }
-    @GetMapping("/validateStudentOtp")
-    public @ResponseBody Boolean validateOtp(@RequestParam(name = "userOtp") Integer userOtp)
-    {
-
-        Boolean validOtp;
-        System.out.println("User:"+mail.getRecipient());
-        System.out.println("user:"+userOtp);
-        if (userOtp >= 0) {
-            int generatedOtp=otpService.getOtp(mail.getRecipient());
-            if(generatedOtp>0)
-            {
-                if(userOtp==generatedOtp)
-                {
-                    validOtp=true;
-                    otpService.clearOTP(mail.getRecipient());
-                }
-                else
-                {
-                    validOtp=false;
-                }
-            }
-            else
-            {
-                validOtp=false;
-            }
-        }
-        else
-        {
-            validOtp=false;
-        }
-        return validOtp;
+    @PostMapping("/validateStudentOtp")
+    public @ResponseBody Boolean validateOtp(@RequestParam("userOtp") int userOtp) {
+        return studentService.validStudentOtp(userOtp);
     }
-    @GetMapping("/validateStudentForgotPassword")
-    public Boolean validateForgotPassword(@RequestParam(name="userOtp") Integer userOtp)
+    @PostMapping("/validateStudentForgotPassword")
+    public Boolean validateForgotPassword(@RequestParam int userOtp)
     {
-
-        Boolean validOtp;
-        System.out.println("User:"+mail.getRecipient());
-        System.out.println("user:"+userOtp);
-        if (userOtp >= 0) {
-            int generatedOtp=otpService.getOtp(mail.getRecipient());
-            if(generatedOtp>0)
-            {
-                if(userOtp==generatedOtp)
-                {
-                    validOtp=true;
-
-                }
-                else
-                {
-                    validOtp=false;
-                }
-            }
-            else
-            {
-                validOtp=false;
-            }
-        }
-        else
-        {
-            validOtp=false;
-        }
-        return validOtp;
+        return studentService.validStudentOtp(userOtp);
     }
     @PostMapping("/createStudentNewPassword")
-    public ResponseEntity<Student> createNewPassword(@RequestParam String pass)
+    public String createNewPassword(@RequestParam("pass") String pass)
     {
-        newStudent.setPassword(passwordEncoder.encode(pass));
-        return ResponseEntity.ok(repo.save(newStudent));
+        return studentService.createPassword(pass);
     }
 }
