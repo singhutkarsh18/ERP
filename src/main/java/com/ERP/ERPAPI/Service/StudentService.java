@@ -156,10 +156,16 @@ public class StudentService {
         try {
         System.out.println(pass);
             String regexPass = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{8,20}$";
-            if (isValid(pass, regexPass) && newStudent.getValid()) {
-                newStudent.setPassword(passwordEncoder.encode(pass));
-                ResponseEntity.ok(repo.save(newStudent));
-                return "Password Valid\nStudent SignUp Successful";
+            if (isValid(pass, regexPass) ) {
+                if(newStudent.getValid()) {
+                    newStudent.setPassword(passwordEncoder.encode(pass));
+                    ResponseEntity.ok(repo.save(newStudent));
+                    return "Password Valid\nStudent SignUp Successful";
+                }
+                else
+                {
+                    return "Student not validated through OTP";
+                }
             }
             else{
 

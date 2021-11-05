@@ -53,7 +53,6 @@ public class StudentOtpController {
     @PostMapping( value="/createStudentNewPassword" )
     public String createNewPassword( @RequestBody Password password)
     {
-        System.out.println();
         return studentService.createPassword(password.getPassword());
     }
     @PostMapping("/delete/allStudents")

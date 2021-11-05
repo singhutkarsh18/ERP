@@ -3,7 +3,6 @@ package com.ERP.ERPAPI.Model;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import java.util.Objects;
 
 @Entity
 public class Admin {
@@ -13,19 +12,29 @@ public class Admin {
     @Id
     @GeneratedValue
     private Integer id;
+    private String name;
     private String username;
     private String password;
-    private String valid;
+    private Boolean valid;
     private Integer OTP;
 
     public Admin() {
     }
 
-    public Admin( String username, String password, String valid, Integer OTP) {
+    public Admin( String name,String username, String password, Boolean valid, Integer OTP) {
+        this.name=name;
         this.username = username;
         this.password = password;
         this.valid = valid;
         this.OTP = OTP;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Integer getId() {
@@ -52,11 +61,11 @@ public class Admin {
         this.password = password;
     }
 
-    public String getValid() {
+    public Boolean getValid() {
         return valid;
     }
 
-    public void setValid(String valid) {
+    public void setValid(Boolean valid) {
         this.valid = valid;
     }
 

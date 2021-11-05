@@ -2,7 +2,9 @@ package com.ERP.ERPAPI.Controller;
 
 import com.ERP.ERPAPI.Model.Admin;
 import com.ERP.ERPAPI.Model.Mail;
+import com.ERP.ERPAPI.Model.Password;
 import com.ERP.ERPAPI.Repository.AdminRepository;
+import com.ERP.ERPAPI.Service.AdminService;
 import com.ERP.ERPAPI.Service.OtpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,81 +26,33 @@ public class AdminOtpController {
     private OtpService otpService;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    AdminService adminService;
 
     @PostMapping("/create/Admin")
-    public String sendOTP(@RequestBody Admin admin) throws MessagingException
+    public String createAdmin(@RequestBody Admin admin) throws MessagingException
     {
-        newAdmin.setUsername(admin.getUsername());
-
-        if(repo.existsAdminByUsername(admin.getUsername())==false) {
-            int otp = otpService.generateOTP(admin.getUsername());
-            System.out.println("OTP SENT");
-            String message = "OTP for ERP is " + otp;
-            mail.setRecipient(admin.getUsername());
-            mail.setMessage(message);
-            mail.setSubject("OTP");
-            System.out.println(mail.getRecipient());
-            System.out.println(mail.getMessage());
-            otpService.sendMail(mail);
-            return "OTP Sent";
-        }
-        else
-        {
-            return "User already present";
-        }
+      return adminService.create(admin);
     }
     @PostMapping("/forgot/AdminPassword")
-    public void forgotPassword(@RequestBody Map<String,String> email) throws MessagingException
+    public String forgotPassword(@RequestBody Map<String,String> username) throws MessagingException
     {
-
-            int otp = otpService.generateOTP(email.get("email"));
-            System.out.println("OTP Sent");
-            String message = "OTP for ERP is " + otp;
-            mail.setRecipient(email.get("email"));
-            mail.setMessage(message);
-            mail.setSubject("OTP");
-            System.out.println(mail.getRecipient());
-            System.out.println(mail.getMessage());
-            otpService.sendMail(mail);
+        return adminService.forgotPassword(username.get("username"));
     }
-    @GetMapping("/validate/AdminOtp")
+    @PostMapping("/validate/AdminOtp")
     public @ResponseBody Boolean validateOtp(@RequestBody Map<String,Integer> userOtp1)
     {
-
-        Boolean validOtp;
-        int userOtp=userOtp1.get("userOtp");
-        System.out.println("User:"+mail.getRecipient());
-        System.out.println("user:"+userOtp);
-        if (userOtp >= 0) {
-            int generatedOtp=otpService.getOtp(mail.getRecipient());
-            if(generatedOtp>0)
-            {
-                if(userOtp==generatedOtp)
-                {
-                    validOtp=true;
-                    ResponseEntity.ok(repo.save(newAdmin));
-                    otpService.clearOTP(mail.getRecipient());
-                }
-                else
-                {
-                    validOtp=false;
-                }
-            }
-            else
-            {
-                validOtp=false;
-            }
-        }
-        else
-        {
-            validOtp=false;
-        }
-        return validOtp;
+        return adminService.validOtp(userOtp1.get("userOtp"));
     }
     @PostMapping("/create/AdminNewPassword")
-    public void createNewPassword(@RequestBody Map<String,String> pass)
+    public String createNewPassword(@RequestBody Password password)
     {
-        newAdmin.setPassword(passwordEncoder.encode(pass.get("pass")));
-        ResponseEntity.ok(repo.save(newAdmin));
+        return adminService.createPassword(password.getPassword());
     }
+    @PostMapping("/validate/forgetPassword")
+    public Boolean validateForgotPassword(@RequestBody Map<String,Integer> userOtp)
+    {
+        return adminService.validForgotOtp(userOtp.get("userOtp"));
+    }
+
 }
