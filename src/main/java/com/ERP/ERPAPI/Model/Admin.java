@@ -15,13 +15,17 @@ public class Admin {
     private Integer id;
     private String username;
     private String password;
+    private String valid;
+    private Integer OTP;
 
     public Admin() {
     }
 
-    public Admin(String username, String password) {
+    public Admin( String username, String password, String valid, Integer OTP) {
         this.username = username;
         this.password = password;
+        this.valid = valid;
+        this.OTP = OTP;
     }
 
     public Integer getId() {
@@ -46,5 +50,21 @@ public class Admin {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getValid() {
+        return valid;
+    }
+
+    public void setValid(String valid) {
+        this.valid = valid;
+    }
+
+    public Integer getOTP() {
+        return OTP;
+    }
+
+    public void setOTP(Integer OTP) {
+        this.OTP = OTP;
     }
 }

@@ -1,18 +1,17 @@
 package com.ERP.ERPAPI.Controller;
 
 import com.ERP.ERPAPI.Model.Mail;
+import com.ERP.ERPAPI.Model.Password;
 import com.ERP.ERPAPI.Model.Student;
 import com.ERP.ERPAPI.Repository.StudentRepository;
 import com.ERP.ERPAPI.Service.OtpService;
 import com.ERP.ERPAPI.Service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -34,22 +33,33 @@ public class StudentOtpController {
     }
 
     @PostMapping("/forgotStudentPassword")
-    public String forgotPassword(@RequestBody Student studentU) throws MessagingException
+    public String forgotPassword(@RequestBody Map<String,String> request) throws MessagingException
     {
-        return studentService.forgot(studentU);
+        return studentService.forgot(request.get("username"));
     }
     @PostMapping("/validateStudentOtp")
-    public @ResponseBody Boolean validateOtp(@RequestParam("userOtp") int userOtp) {
-        return studentService.validStudentOtp(userOtp);
+    public @ResponseBody Boolean validateOtp(@RequestBody Map<String,Integer> request) {
+        System.out.println(request.get("userOtp"));
+        return studentService.validStudentOtp(request.get("userOtp"));
     }
     @PostMapping("/validateStudentForgotPassword")
-    public Boolean validateForgotPassword(@RequestParam int userOtp)
+    public Boolean validateForgotPassword(@RequestBody Map<String,Integer> userOtp)
     {
-        return studentService.validStudentOtp(userOtp);
+        System.out.println(userOtp.get("userOtp"));
+        boolean c=studentService.validateForgotPassword(userOtp.get("userOtp"));
+        System.out.println(c);
+        return c;
     }
-    @PostMapping("/createStudentNewPassword")
-    public String createNewPassword(@RequestParam("pass") String pass)
+    @PostMapping( value="/createStudentNewPassword" )
+    public String createNewPassword( @RequestBody Password password)
     {
-        return studentService.createPassword(pass);
+        System.out.println();
+        return studentService.createPassword(password.getPassword());
+    }
+    @PostMapping("/delete/allStudents")
+    public String deleteAll()
+    {
+        repo.deleteAll();
+        return "DB clear";
     }
 }

@@ -5,10 +5,12 @@ import com.ERP.ERPAPI.Model.Mail;
 import com.ERP.ERPAPI.Repository.AdminRepository;
 import com.ERP.ERPAPI.Service.OtpService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -23,7 +25,7 @@ public class AdminOtpController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @PostMapping("/createAdmin")
+    @PostMapping("/create/Admin")
     public String sendOTP(@RequestBody Admin admin) throws MessagingException
     {
         newAdmin.setUsername(admin.getUsername());
@@ -45,25 +47,26 @@ public class AdminOtpController {
             return "User already present";
         }
     }
-    @PostMapping("/forgotAdminPassword")
-    public void forgotPassword(@RequestParam String email) throws MessagingException
+    @PostMapping("/forgot/AdminPassword")
+    public void forgotPassword(@RequestBody Map<String,String> email) throws MessagingException
     {
 
-            int otp = otpService.generateOTP(email);
+            int otp = otpService.generateOTP(email.get("email"));
             System.out.println("OTP Sent");
             String message = "OTP for ERP is " + otp;
-            mail.setRecipient(email);
+            mail.setRecipient(email.get("email"));
             mail.setMessage(message);
             mail.setSubject("OTP");
             System.out.println(mail.getRecipient());
             System.out.println(mail.getMessage());
             otpService.sendMail(mail);
     }
-    @GetMapping("/validateAdminOtp")
-    public @ResponseBody Boolean validateOtp(@RequestParam(name = "userOtp") Integer userOtp)
+    @GetMapping("/validate/AdminOtp")
+    public @ResponseBody Boolean validateOtp(@RequestBody Map<String,Integer> userOtp1)
     {
 
         Boolean validOtp;
+        int userOtp=userOtp1.get("userOtp");
         System.out.println("User:"+mail.getRecipient());
         System.out.println("user:"+userOtp);
         if (userOtp >= 0) {
@@ -73,7 +76,7 @@ public class AdminOtpController {
                 if(userOtp==generatedOtp)
                 {
                     validOtp=true;
-                    repo.save(newAdmin);
+                    ResponseEntity.ok(repo.save(newAdmin));
                     otpService.clearOTP(mail.getRecipient());
                 }
                 else
@@ -92,10 +95,10 @@ public class AdminOtpController {
         }
         return validOtp;
     }
-    @PostMapping("/createAdminNewPassword")
-    public void createNewPassword(@RequestParam String pass)
+    @PostMapping("/create/AdminNewPassword")
+    public void createNewPassword(@RequestBody Map<String,String> pass)
     {
-        newAdmin.setPassword(passwordEncoder.encode(pass));
-        repo.save(newAdmin);
+        newAdmin.setPassword(passwordEncoder.encode(pass.get("pass")));
+        ResponseEntity.ok(repo.save(newAdmin));
     }
 }

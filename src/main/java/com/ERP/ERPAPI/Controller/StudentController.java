@@ -22,7 +22,7 @@ public class StudentController {
     @GetMapping("/hello")
     public String hello()
     {
-        return "hello";
+        return "Hey there .....";
     }
 
 }
