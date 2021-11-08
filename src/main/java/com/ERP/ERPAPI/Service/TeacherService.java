@@ -19,8 +19,7 @@ public class TeacherService {
     private TeacherRepository repo;
     @Autowired
     private PasswordEncoder passwordEncoder;
-    @Autowired
-    private ReportsRepository reportsRepository;
+
     public String create(Teacher teacher)
     {
         if (!repo.existsTeacherByUsername(teacher.getUsername())) {
@@ -39,25 +38,26 @@ public class TeacherService {
         }
 
     }
-//    public List<Teacher> showAll()
-//    {
-//        List<Teacher> teachers=new ArrayList<>();
-//        teachers =repo.findAll();
-//        return teachers;
-//    }
-//    public String remove(Username username)
-//    {
-//        if (repo.existsTeacherByUsername(username)) {
-//            repo.deleteByUsername(username);
-//            return "Teacher removed from database";
-//        }
-//        else
-//        {
-//            return "Teacher not present";
-//        }
-//    }
-//    public List<Report> showReports()
-//    {
-//        return reportsRepository.findAll();
-//    }
+    public List<Teacher> showAll()
+    {
+        List<Teacher> teachers=new ArrayList<>();
+        teachers =repo.findAll();
+        return teachers;
+    }
+    public String remove(Username username)
+    {
+        if (repo.existsTeacherByUsername(username.getUsername())) {
+            repo.deleteByUsername(username.getUsername());
+            return "Teacher removed from database";
+        }
+        else
+        {
+            return "Teacher not present";
+        }
+    }
+    public List<Report> showReports()
+    {
+        return reportsRepository.findAll();
+    }
+
 }

@@ -1,14 +1,14 @@
 package com.ERP.ERPAPI.Model;
 
-public class StudentDTO {
+public class PasswordDTO {
 
     private String username;
     private String password;
 
-    public StudentDTO() {
+    public PasswordDTO() {
     }
 
-    public StudentDTO(String username, String password) {
+    public PasswordDTO(String username, String password) {
         this.username = username;
         this.password = password;
     }
@@ -17,7 +17,7 @@ public class StudentDTO {
         return username;
     }
 
-    public void setEmail(String username) {
+    public void setUsername(String username) {
         this.username = username;
     }
 

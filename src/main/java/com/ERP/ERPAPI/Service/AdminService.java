@@ -2,12 +2,16 @@ package com.ERP.ERPAPI.Service;
 
 import com.ERP.ERPAPI.Model.Admin;
 import com.ERP.ERPAPI.Model.Mail;
+import com.ERP.ERPAPI.Model.Report;
 import com.ERP.ERPAPI.Repository.AdminRepository;
+import com.ERP.ERPAPI.Repository.ReportsRepository;
+import com.ERP.ERPAPI.Repository.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,6 +26,11 @@ public class AdminService {
     private OtpService otpService;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private TeacherRepository teacherRepository;
+    @Autowired
+    private ReportsRepository reportsRepository;
+
     public String create(Admin admin)
     {
         String regexEmail="^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}";
@@ -175,6 +184,19 @@ public class AdminService {
             System.out.println("UserOtp:"+userOtp);
             System.out.println(userOtp);
             return false;
+        }
+    }
+    public List<Report> showReports()
+    {
+        return reportsRepository.findAll();
+    }
+    public String changePassword(String username,String password)
+    {
+        if(teacherRepository.existsTeacherByUsername(username))
+        {
+            Admin admin = repo.findByUsername(username);
+            admin.setPassword(password);
+            repo.save(admin);
         }
     }
 }
