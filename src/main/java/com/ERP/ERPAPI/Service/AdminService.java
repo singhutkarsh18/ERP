@@ -2,15 +2,12 @@ package com.ERP.ERPAPI.Service;
 
 import com.ERP.ERPAPI.Model.Admin;
 import com.ERP.ERPAPI.Model.Mail;
-import com.ERP.ERPAPI.Model.Student;
 import com.ERP.ERPAPI.Repository.AdminRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -107,7 +104,7 @@ public class AdminService {
                 if(newAdmin.getValid()) {
                     newAdmin.setPassword(passwordEncoder.encode(pass));
                     ResponseEntity.ok(repo.save(newAdmin));
-                    return "Password Valid\nStudent SignUp Successful";
+                    return "Password Valid SignUp Successful";
                 }
                 else
                 {
