@@ -61,4 +61,9 @@ public class StudentOtpController {
         repo.deleteAll();
         return "DB clear";
     }
+    @PostMapping("/hello")
+    public String hello()
+    {
+        return "Hello";
+    }
 }

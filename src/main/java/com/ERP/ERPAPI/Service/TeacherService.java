@@ -55,9 +55,6 @@ public class TeacherService {
             return "Teacher not present";
         }
     }
-    public List<Report> showReports()
-    {
-        return reportsRepository.findAll();
-    }
+    
 
 }

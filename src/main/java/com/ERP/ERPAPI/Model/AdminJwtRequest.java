@@ -1,7 +1,7 @@
 package com.ERP.ERPAPI.Model;
 
 public class AdminJwtRequest {
-    private static final long serialVersionUID = 5926468583005150707L;
+    private static final long serialVersionUID = 5926468583005151707L;
 
     private String username;
     private String password;

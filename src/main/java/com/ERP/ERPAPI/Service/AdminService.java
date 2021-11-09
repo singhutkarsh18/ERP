@@ -39,7 +39,7 @@ public class AdminService {
             newAdmin.setName(admin.getName());
             newAdmin.setUsername(admin.getUsername());
             newAdmin.setValid(false);
-            if (repo.existsAdminByUsername(admin.getUsername()) == false) {
+            if (!repo.existsAdminByUsername(admin.getUsername())) {
                 int otp = otpService.generateOTP(admin.getUsername());
                 newAdmin.setOTP(otp);
                 System.out.println("OTP SENT");
@@ -195,8 +195,13 @@ public class AdminService {
         if(teacherRepository.existsTeacherByUsername(username))
         {
             Admin admin = repo.findByUsername(username);
-            admin.setPassword(password);
+            admin.setPassword(passwordEncoder.encode(password));
             repo.save(admin);
+            return "Password updated";
+        }
+        else
+        {
+            return  "Admin not present";
         }
     }
 }
