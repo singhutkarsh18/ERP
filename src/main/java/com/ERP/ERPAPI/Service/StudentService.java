@@ -1,13 +1,18 @@
 package com.ERP.ERPAPI.Service;
 
+import com.ERP.ERPAPI.Model.Announcement;
 import com.ERP.ERPAPI.Model.Mail;
+import com.ERP.ERPAPI.Model.Report;
 import com.ERP.ERPAPI.Model.Student;
+import com.ERP.ERPAPI.Repository.AnnouncementRepository;
+import com.ERP.ERPAPI.Repository.ReportsRepository;
 import com.ERP.ERPAPI.Repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,7 +26,11 @@ public class StudentService {
     @Autowired
     PasswordEncoder passwordEncoder;
     @Autowired
+    ReportsRepository reportsRepository;
+    @Autowired
     OtpService otpService;
+    @Autowired
+    AnnouncementRepository announcementRepository;
 
     public String create(Student student){
         String regexEmail="^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}";
@@ -177,6 +186,30 @@ public class StudentService {
             return "Null Password";
         }
     }
-
+    public String changePassword(String username,String password)
+    {
+        if(repo.existsStudentByUsername(username)) {
+            Student student = repo.findByUsername(username);
+            student.setPassword(passwordEncoder.encode(password));
+            repo.save(student);
+            return "Password updated";
+        }
+        else{
+            return "User not present";
+        }
+    }
+    public String reportProblem(Report report)
+    {
+        Report newReport = new Report();
+        newReport.setUser(report.getUser());
+        newReport.setDate(report.getDate());
+        newReport.setProblem(report.getProblem());
+        reportsRepository.save(newReport);
+        return "Report saved";
+    }
+    public List<Announcement> announcementList()
+    {
+        return announcementRepository.findAll();
+    }
 
 }

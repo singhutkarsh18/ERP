@@ -1,9 +1,6 @@
 package com.ERP.ERPAPI.Controller;
 
-import com.ERP.ERPAPI.Model.PasswordDTO;
-import com.ERP.ERPAPI.Model.Report;
-import com.ERP.ERPAPI.Model.Teacher;
-import com.ERP.ERPAPI.Model.Username;
+import com.ERP.ERPAPI.Model.*;
 import com.ERP.ERPAPI.Service.AdminService;
 import com.ERP.ERPAPI.Service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,4 +56,10 @@ public class AdminDashboardController {
     {
         return "Hello";
     }
+    @PostMapping("/create/announcement")
+    public String createAnnouncement(@RequestBody Announcement announcement)
+    {
+        return adminService.addAnnouncement(announcement);
+    }
+
 }

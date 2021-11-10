@@ -1,9 +1,11 @@
 package com.ERP.ERPAPI.Service;
 
 import com.ERP.ERPAPI.Model.Admin;
+import com.ERP.ERPAPI.Model.Announcement;
 import com.ERP.ERPAPI.Model.Mail;
 import com.ERP.ERPAPI.Model.Report;
 import com.ERP.ERPAPI.Repository.AdminRepository;
+import com.ERP.ERPAPI.Repository.AnnouncementRepository;
 import com.ERP.ERPAPI.Repository.ReportsRepository;
 import com.ERP.ERPAPI.Repository.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +32,8 @@ public class AdminService {
     private TeacherRepository teacherRepository;
     @Autowired
     private ReportsRepository reportsRepository;
-
+    @Autowired
+    private AnnouncementRepository announcementRepository;
     public String create(Admin admin)
     {
         String regexEmail="^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}";
@@ -201,7 +204,12 @@ public class AdminService {
         }
         else
         {
-            return  "Admin not present";
+            return  "User not present";
         }
+    }
+    public String addAnnouncement(Announcement announcement)
+    {
+        announcementRepository.save(announcement);
+        return "Announcement added";
     }
 }
