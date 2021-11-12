@@ -1,59 +1,67 @@
 package com.ERP.ERPAPI.Controller;
 
-import com.ERP.ERPAPI.Model.Mail;
-import com.ERP.ERPAPI.Model.Password;
+import com.ERP.ERPAPI.Model.OTP;
+import com.ERP.ERPAPI.Model.PasswordDTO;
 import com.ERP.ERPAPI.Model.Student;
 import com.ERP.ERPAPI.Repository.StudentRepository;
-import com.ERP.ERPAPI.Service.OtpService;
 import com.ERP.ERPAPI.Service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.mail.MessagingException;
 import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "*")
 public class StudentOtpController {
 
-    Mail mail=new Mail();
+
     @Autowired
     StudentRepository repo;
-    @Autowired
-    private OtpService otpService;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+
     @Autowired
     StudentService studentService;
+
     @PostMapping("/createStudent")
-    public String sendOTP(@RequestBody Student student) throws MessagingException
+    public ResponseEntity<?> sendOTP(@RequestBody Student student)
     {
-        return studentService.create(student);
+        HttpHeaders headers=new HttpHeaders();
+//        try {
+
+        System.out.println(student.getUsername());
+        System.out.println(student.getName());
+        return ResponseEntity.status(HttpStatus.CREATED).body(studentService.create(student));
+//    }
+//        catch (Exception e) {
+//        headers.add("Message", "false");
+//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).body("Failed to add the user");
+//    }
     }
 
     @PostMapping("/forgotStudentPassword")
-    public String forgotPassword(@RequestBody Map<String,String> request) throws MessagingException
+    public String forgotPassword(@RequestBody Map<String,String> request)
     {
         return studentService.forgot(request.get("username"));
     }
     @PostMapping("/validateStudentOtp")
-    public @ResponseBody Boolean validateOtp(@RequestBody Map<String,Integer> request) {
-        System.out.println(request.get("userOtp"));
-        return studentService.validStudentOtp(request.get("userOtp"));
+    public @ResponseBody Boolean validateOtp(@RequestBody OTP otp) {
+        System.out.println(otp.getUserOtp());
+        return studentService.validStudentOtp(otp.getUserOtp(),otp.getUsername());
     }
     @PostMapping("/validateStudentForgotPassword")
-    public Boolean validateForgotPassword(@RequestBody Map<String,Integer> userOtp)
+    public Boolean validateForgotPassword(@RequestBody OTP otp)
     {
-        System.out.println(userOtp.get("userOtp"));
-        boolean c=studentService.validateForgotPassword(userOtp.get("userOtp"));
+        System.out.println(otp.getUserOtp());
+        boolean c=studentService.validStudentOtp(otp.getUserOtp(),otp.getUsername());
         System.out.println(c);
         return c;
     }
     @PostMapping( value="/createStudentNewPassword" )
-    public String createNewPassword( @RequestBody Password password)
+    public String createNewPassword( @RequestBody PasswordDTO passwordDTO)
     {
-        return studentService.createPassword(password.getPassword());
+        return studentService.createPassword(passwordDTO.getUsername(),passwordDTO.getPassword());
     }
     @PostMapping("/delete/allStudents")
     public String deleteAll()

@@ -18,7 +18,7 @@ public class StudentDashboard {
     @Autowired
     StudentService studentService;
 
-    @PostMapping("/update/studentPassword")
+    @PostMapping("/update/Password/Student")
     public String updateStudentPassword(@RequestBody PasswordDTO passwordDTO)
     {
         return studentService.changePassword(passwordDTO.getUsername(),passwordDTO.getPassword());
@@ -26,6 +26,7 @@ public class StudentDashboard {
     @PostMapping("/report/student")
     public String report(@RequestBody Report report)
     {
+
         return studentService.reportProblem(report);
     }
     @GetMapping("/show/announcement")

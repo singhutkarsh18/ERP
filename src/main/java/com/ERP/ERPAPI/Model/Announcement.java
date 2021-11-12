@@ -11,10 +11,14 @@ public class Announcement {
     @Id
     @GeneratedValue
     private Integer id;
+    private String date;
+    private String subject;
     private String announcement;
 
-    public Announcement(String announcement) {
+    public Announcement(String announcement,String date,String subject) {
         this.announcement = announcement;
+        this.date=date;
+        this.subject=subject;
     }
 
     public Announcement() {
@@ -35,5 +39,21 @@ public class Announcement {
 
     public void setAnnouncement(String announcement) {
         this.announcement = announcement;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 }

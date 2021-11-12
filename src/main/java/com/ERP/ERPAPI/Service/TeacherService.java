@@ -1,9 +1,8 @@
 package com.ERP.ERPAPI.Service;
 
-import com.ERP.ERPAPI.Model.Report;
+import com.ERP.ERPAPI.Model.Admin;
 import com.ERP.ERPAPI.Model.Teacher;
 import com.ERP.ERPAPI.Model.Username;
-import com.ERP.ERPAPI.Repository.ReportsRepository;
 import com.ERP.ERPAPI.Repository.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -53,6 +52,20 @@ public class TeacherService {
         else
         {
             return "Teacher not present";
+        }
+    }
+    public String changePassword(String username,String password)
+    {
+        if(repo.existsTeacherByUsername(username))
+        {
+            Teacher teacher=repo.findByUsername(username);
+            teacher.setPassword(passwordEncoder.encode(password));
+            repo.save(teacher);
+            return "Password updated";
+        }
+        else
+        {
+            return  "User not present";
         }
     }
     

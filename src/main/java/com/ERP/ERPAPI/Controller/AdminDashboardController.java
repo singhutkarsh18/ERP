@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import javax.transaction.Transactional;
 import java.util.List;
 
@@ -47,9 +46,12 @@ public class AdminDashboardController {
         return adminService.showReports();
     }
     @PostMapping("/update/password/Admin")
-    public String changePassword(@RequestBody PasswordDTO passwordDTO)
+    public String changePassword(@RequestBody Password password)
     {
-        return adminService.changePassword(passwordDTO.getUsername(),passwordDTO.getPassword());
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+        String username=userDetails.getUsername();
+        return adminService.changePassword(username,password.getPassword());
     }
     @PostMapping("/hello1")
     public String hello()
