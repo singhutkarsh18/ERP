@@ -1,9 +1,6 @@
 package com.ERP.ERPAPI.Service;
 
-import com.ERP.ERPAPI.Model.Admin;
-import com.ERP.ERPAPI.Model.Announcement;
-import com.ERP.ERPAPI.Model.Mail;
-import com.ERP.ERPAPI.Model.Report;
+import com.ERP.ERPAPI.Model.*;
 import com.ERP.ERPAPI.Repository.AdminRepository;
 import com.ERP.ERPAPI.Repository.AnnouncementRepository;
 import com.ERP.ERPAPI.Repository.ReportsRepository;
@@ -20,7 +17,6 @@ import java.util.regex.Pattern;
 @Service
 public class AdminService {
 
-    Admin newAdmin = new Admin();
     Mail mail=new Mail();
     @Autowired
     AdminRepository repo;
@@ -36,15 +32,16 @@ public class AdminService {
     private AnnouncementRepository announcementRepository;
     public String create(Admin admin)
     {
+        Admin admin1=new Admin();
         String regexEmail="^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}";
         if(isValid(admin.getUsername(),regexEmail)) {
-            newAdmin.setId(admin.getId());
-            newAdmin.setName(admin.getName());
-            newAdmin.setUsername(admin.getUsername());
-            newAdmin.setValid(false);
+            admin1.setId(admin.getId());
+            admin1.setName(admin.getName());
+            admin1.setUsername(admin.getUsername());
+            admin1.setValid(false);
             if (!repo.existsAdminByUsername(admin.getUsername())) {
                 int otp = otpService.generateOTP(admin.getUsername());
-                newAdmin.setOTP(otp);
+                admin1.setOTP(otp);
                 System.out.println("OTP SENT");
                 String message = "OTP for ERP is " + otp;
                 mail.setRecipient(admin.getUsername());
@@ -53,11 +50,17 @@ public class AdminService {
                 System.out.println(mail.getRecipient());
                 System.out.println(mail.getMessage());
                 otpService.sendMail(mail);
+                repo.save(admin1);
                 return "Valid email OTP Sent";
             }
             else
             {
-                return "User already present";
+                Admin admin2= repo.findByUsername(admin.getUsername());
+                if (admin2.getPassword() == null && admin2.getValid())
+                    return "Otp verified create password";
+                else {
+                    return "User already present";
+                }
             }
         }
         else {
@@ -71,20 +74,20 @@ public class AdminService {
         Matcher matcher = pattern.matcher(emailOrPass);
         return matcher.matches();
     }
-    public Boolean validOtp(int userOtp)
+    public Boolean validOtp(Integer userOtp,String username)
     {
         try {
-
+            Admin admin = repo.findByUsername(username);
             Boolean validOtp;
             System.out.println("User:" + mail.getRecipient());
             System.out.println("user:" + userOtp);
 
             if (userOtp >= 0) {
-                int generatedOtp = newAdmin.getOTP();
+                int generatedOtp =admin.getOTP();
                 if (generatedOtp > 0) {
                     if (userOtp == generatedOtp) {
-                        newAdmin.setValid(true);
-                        repo.save(newAdmin);
+                        admin.setValid(true);
+                        repo.save(admin);
 //                        System.out.println();
                         validOtp = true;
                         otpService.clearOTP(mail.getRecipient());
@@ -107,15 +110,16 @@ public class AdminService {
             return false;
         }
     }
-    public String createPassword(String pass)
+    public String createPassword(String username,String password)
     {
         try {
-            System.out.println(pass);
+            Admin admin =repo.findByUsername(username);
+            System.out.println(password);
             String regexPass = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{8,20}$";
-            if (isValid(pass, regexPass) ) {
-                if(newAdmin.getValid()) {
-                    newAdmin.setPassword(passwordEncoder.encode(pass));
-                    ResponseEntity.ok(repo.save(newAdmin));
+            if (isValid(password, regexPass) ) {
+                if(admin.getValid()) {
+                    admin.setPassword(passwordEncoder.encode(password));
+                    ResponseEntity.ok(repo.save(admin));
                     return "Password Valid SignUp Successful";
                 }
                 else
@@ -137,9 +141,11 @@ public class AdminService {
     {
         String regexEmail="^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}";
         if(isValid(email,regexEmail)&&repo.existsAdminByUsername(email)) {
+            Admin admin = repo.findByUsername(email);
             int otp = otpService.generateOTP(email);
 
-            newAdmin.setOTP(otp);
+            admin.setOTP(otp);
+            repo.save(admin);
             String message = "OTP for ERP is " + otp;
             mail.setRecipient(email);
             mail.setMessage(message);
@@ -154,41 +160,41 @@ public class AdminService {
             return "Invalid Email";
         }
     }
-    public Boolean validForgotOtp(int userOtp)
-    {
-        try {
-
-            Boolean validOtp;
-            System.out.println("User:" + mail.getRecipient());
-            System.out.println("user:" + userOtp);
-
-            if (userOtp >= 0) {
-                int generatedOtp = otpService.getOtp(mail.getRecipient());
-                if (generatedOtp > 0) {
-                    if (userOtp == generatedOtp) {
-                        newAdmin.setValid(true);
-                        repo.save(newAdmin);
-                        validOtp = true;
-                        otpService.clearOTP(mail.getRecipient());
-                    } else {
-                        validOtp = false;
-                    }
-                } else {
-                    validOtp = false;
-                }
-            } else {
-                validOtp = false;
-            }
-            System.out.println(validOtp);
-            return validOtp;
-        }
-        catch(NullPointerException n)
-        {
-            System.out.println("UserOtp:"+userOtp);
-            System.out.println(userOtp);
-            return false;
-        }
-    }
+//    public Boolean validForgotOtp(int userOtp)
+//    {
+//        try {
+//
+//            Boolean validOtp;
+//            System.out.println("User:" + mail.getRecipient());
+//            System.out.println("user:" + userOtp);
+//
+//            if (userOtp >= 0) {
+//                int generatedOtp = otpService.getOtp(mail.getRecipient());
+//                if (generatedOtp > 0) {
+//                    if (userOtp == generatedOtp) {
+//                        newAdmin.setValid(true);
+//                        repo.save(newAdmin);
+//                        validOtp = true;
+//                        otpService.clearOTP(mail.getRecipient());
+//                    } else {
+//                        validOtp = false;
+//                    }
+//                } else {
+//                    validOtp = false;
+//                }
+//            } else {
+//                validOtp = false;
+//            }
+//            System.out.println(validOtp);
+//            return validOtp;
+//        }
+//        catch(NullPointerException n)
+//        {
+//            System.out.println("UserOtp:"+userOtp);
+//            System.out.println(userOtp);
+//            return false;
+//        }
+//    }
     public List<Report> showReports()
     {
         return reportsRepository.findAll();
