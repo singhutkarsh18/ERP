@@ -2,12 +2,12 @@ package com.ERP.ERPAPI.Controller;
 
 import com.ERP.ERPAPI.Model.Admin;
 import com.ERP.ERPAPI.Model.Mail;
-import com.ERP.ERPAPI.Model.Password;
+import com.ERP.ERPAPI.Model.OTP;
+import com.ERP.ERPAPI.Model.PasswordDTO;
 import com.ERP.ERPAPI.Repository.AdminRepository;
 import com.ERP.ERPAPI.Service.AdminService;
 import com.ERP.ERPAPI.Service.OtpService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,19 +40,19 @@ public class AdminOtpController {
         return adminService.forgotPassword(username.get("username"));
     }
     @PostMapping("/validate/AdminOtp")
-    public @ResponseBody Boolean validateOtp(@RequestBody Map<String,Integer> userOtp1)
+    public @ResponseBody Boolean validateOtp(@RequestBody OTP otp)
     {
-        return adminService.validOtp(userOtp1.get("userOtp"));
+        return adminService.validOtp(otp.getUserOtp(),otp.getUsername());
     }
     @PostMapping("/create/AdminNewPassword")
-    public String createNewPassword(@RequestBody Password password)
+    public String createNewPassword(@RequestBody PasswordDTO passwordDTO)
     {
-        return adminService.createPassword(password.getPassword());
+        return adminService.createPassword(passwordDTO.getUsername(),passwordDTO.getPassword());
     }
     @PostMapping("/validate/forgetPassword")
-    public Boolean validateForgotPassword(@RequestBody Map<String,Integer> userOtp)
+    public Boolean validateForgotPassword(@RequestBody OTP otp)
     {
-        return adminService.validForgotOtp(userOtp.get("userOtp"));
+        return adminService.validOtp(otp.getUserOtp(),otp.getUsername());
     }
 
 }

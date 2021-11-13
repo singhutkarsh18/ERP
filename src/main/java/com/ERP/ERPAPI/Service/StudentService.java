@@ -1,38 +1,48 @@
 package com.ERP.ERPAPI.Service;
 
+import com.ERP.ERPAPI.Model.Announcement;
 import com.ERP.ERPAPI.Model.Mail;
+import com.ERP.ERPAPI.Model.Report;
 import com.ERP.ERPAPI.Model.Student;
+import com.ERP.ERPAPI.Repository.AnnouncementRepository;
+import com.ERP.ERPAPI.Repository.ReportsRepository;
 import com.ERP.ERPAPI.Repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
 public class StudentService {
 
-    Student newStudent=new Student();
     Mail mail =new Mail();
     @Autowired
     StudentRepository repo;
     @Autowired
     PasswordEncoder passwordEncoder;
     @Autowired
+    ReportsRepository reportsRepository;
+    @Autowired
     OtpService otpService;
+    @Autowired
+    AnnouncementRepository announcementRepository;
 
     public String create(Student student){
+        Student student1 =new Student();
+
         String regexEmail="^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}";
         if(isValid(student.getUsername(),regexEmail)) {
-            newStudent.setId(student.getId());
-            newStudent.setName(student.getName());
-            newStudent.setUsername(student.getUsername());
-            newStudent.setValid(false);
+            student1.setId(student.getId());
+            student1.setName(student.getName());
+            student1.setUsername(student.getUsername());
+            student1.setValid(false);
             if (!repo.existsStudentByUsername(student.getUsername())) {
                 int otp = otpService.generateOTP(student.getUsername());
-                newStudent.setOTP(otp);
+                student1.setOTP(otp);
                 String message = "OTP for ERP is " + otp;
                 mail.setRecipient(student.getUsername());
                 mail.setMessage(message);
@@ -40,11 +50,17 @@ public class StudentService {
                 System.out.println(mail.getRecipient());
                 System.out.println(mail.getMessage());
                 otpService.sendMail(mail);
-                repo.save(newStudent);
+                repo.save(student1);
                 return "Valid Email OTP Sent";
-            } else {
-                return "User already present";
+            } else{
+                Student student2 = repo.findByUsername(student.getUsername());
+                if (student2.getPassword() == null && student2.getValid())
+                    return "Otp verified create password";
+                else {
+                    return "User already present";
+                }
             }
+
         }
         else
         {
@@ -57,23 +73,22 @@ public class StudentService {
         Matcher matcher = pattern.matcher(emailOrPass);
         return matcher.matches();
     }
-    public boolean validStudentOtp(Integer userOtp)
+    public boolean validStudentOtp(Integer userOtp,String username)
     {
         try {
-
+            Student student= repo.findByUsername(username);
             Boolean validOtp;
-            System.out.println("User:" + mail.getRecipient());
+            System.out.println("User:" + username);
             System.out.println("user:" + userOtp);
 
             if (userOtp >= 0) {
-                int generatedOtp = newStudent.getOTP();
+                int generatedOtp = student.getOTP();
                 if (generatedOtp > 0) {
                     if (userOtp == generatedOtp) {
-                        newStudent.setValid(true);
-                        repo.save(newStudent);
+                        student.setValid(true);
+                        repo.save(student);
 //                        System.out.println();
                         validOtp = true;
-                        otpService.clearOTP(mail.getRecipient());
                     } else {
                         validOtp = false;
                     }
@@ -93,23 +108,23 @@ public class StudentService {
             return false;
         }
     }
-    public boolean validateForgotPassword(Integer userOtp)
+    public boolean validateForgotPassword(Integer userOtp,String username)
     {
         try {
-
+            Student student = repo.findByUsername(username);
             Boolean validOtp;
-            System.out.println("User:" + mail.getRecipient());
+            System.out.println("User:" + username);
             System.out.println("user:" + userOtp);
 
             if (userOtp >= 0) {
-                int generatedOtp = otpService.getOtp(mail.getRecipient());
+                int generatedOtp = student.getOTP();
+                System.out.println(generatedOtp);
                 if (generatedOtp > 0) {
                     if (userOtp == generatedOtp) {
-                        newStudent.setValid(true);
-                        repo.save(newStudent);
-//                        System.out.println();
+                        student.setValid(true);
                         validOtp = true;
-                        otpService.clearOTP(mail.getRecipient());
+                        repo.save(student);
+//                        System.out.println();
                     } else {
                         validOtp = false;
                     }
@@ -131,11 +146,13 @@ public class StudentService {
     }
     public String forgot(String email)
     {
+        Student student = repo.findByUsername(email);
         String regexEmail="^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}";
         if(isValid(email,regexEmail)&&repo.existsStudentByUsername(email)) {
             int otp = otpService.generateOTP(email);
-
-            newStudent.setOTP(otp);
+            student.setValid(false);
+            student.setOTP(otp);
+            repo.save(student);
             String message = "OTP for ERP is " + otp;
             mail.setRecipient(email);
             mail.setMessage(message);
@@ -150,16 +167,17 @@ public class StudentService {
             return "Invalid Email";
         }
     }
-    public String createPassword(String pass)
+    public String createPassword(String username,String pass)
     {
 
         try {
+            Student student = repo.findByUsername(username);
         System.out.println(pass);
             String regexPass = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{8,20}$";
             if (isValid(pass, regexPass) ) {
-                if(newStudent.getValid()) {
-                    newStudent.setPassword(passwordEncoder.encode(pass));
-                    ResponseEntity.ok(repo.save(newStudent));
+                if(student.getValid()) {
+                    student.setPassword(passwordEncoder.encode(pass));
+                    ResponseEntity.ok(repo.save(student));
                     return "Password Valid\nStudent SignUp Successful";
                 }
                 else
@@ -176,6 +194,31 @@ public class StudentService {
         {
             return "Null Password";
         }
+    }
+    public String changePassword(String username,String password)
+    {
+        if(repo.existsStudentByUsername(username)) {
+            Student student = repo.findByUsername(username);
+            student.setPassword(passwordEncoder.encode(password));
+            repo.save(student);
+            return "Password updated";
+        }
+        else{
+            return "User not present";
+        }
+    }
+    public String reportProblem(Report report)
+    {
+        Report newReport = new Report();
+        newReport.setUser(report.getUser());
+        newReport.setDate(report.getDate());
+        newReport.setProblem(report.getProblem());
+        reportsRepository.save(newReport);
+        return "Report saved";
+    }
+    public List<Announcement> announcementList()
+    {
+        return announcementRepository.findAll();
     }
 
 

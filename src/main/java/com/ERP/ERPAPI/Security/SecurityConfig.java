@@ -28,13 +28,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private StudentJwtRequestFilter studentJwtRequestFilter;
 
-//    @Autowired
-//    private AdminJwtRequestFilter adminJwtRequestFilter;
 
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.userDetailsService(adminJwtUserDetailService).passwordEncoder(passwordEncoder());
         auth.userDetailsService(studentJwtUserDetailsService).passwordEncoder(passwordEncoder());
     }
     @Bean
@@ -47,7 +44,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity security) throws Exception
     {
         security.httpBasic().disable().csrf().disable().authorizeRequests().antMatchers( "/createStudent","/forgotStudentPassword","/validateStudentOtp/**",
-                        "/validateStudentForgotPassword","/createStudentNewPassword","/h2-console/**","/authenticateStudent","/delete/**","/create/**","/forgot/**","/validate/**","/authenticateAdmin","/show/**").permitAll().
+                        "/validateStudentForgotPassword","/createStudentNewPassword","/h2-console/**","/authenticateStudent","/delete/**","/create/**","/forgot/**","/validate/**","/authenticateAdmin","/show/**",
+                        "/update/**","/add/**","/authenticate/**").permitAll().
                 anyRequest().authenticated();
         security.headers().frameOptions().disable();
         security.exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
