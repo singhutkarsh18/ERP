@@ -64,6 +64,7 @@ public class AdminService {
                     if(!otpService.otpExpired(admin2.getOTP(),admin2.getUsername()))
                     {
                         int otp = otpService.generateOTP(admin2.getUsername());
+                        admin2.setId(admin2.getId());
                         admin2.setOTP(otp);
                         String message = "OTP for ERP is " + otp;
                         mail.setRecipient(admin2.getUsername());
@@ -111,7 +112,6 @@ public class AdminService {
                         repo.save(admin);
 //                        System.out.println();
                         validOtp = true;
-                        otpService.clearOTP(mail.getRecipient());
                     } else {
                         validOtp = false;
                     }
@@ -126,6 +126,7 @@ public class AdminService {
         }
         catch(NullPointerException n)
         {
+            System.out.println("nullll");
             System.out.println("UserOtp:"+userOtp);
             System.out.println(userOtp);
             return false;
@@ -253,5 +254,18 @@ public class AdminService {
     {
         announcementRepository.save(announcement);
         return "Announcement added";
+    }
+    public String removeAnnounecemnt(String date)
+    {
+        if(announcementRepository.existsByDate(date))
+        {
+            announcementRepository.deleteByDate(date);
+            return "deleted";
+        }
+        else
+        {
+            return "announcement not present";
+        }
+
     }
 }

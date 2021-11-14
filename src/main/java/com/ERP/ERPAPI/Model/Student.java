@@ -1,7 +1,5 @@
 package com.ERP.ERPAPI.Model;
 
-import org.springframework.data.relational.core.sql.In;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -15,11 +13,13 @@ public class Student {
     private String name;
     private String username;
     private String password;
+    private Integer studentNo;
 
-    public Student(String name, String username, String password) {
+    public Student(String name, String username, String password,Integer studentNo) {
         this.name = name;
         this.username = username;
         this.password = password;
+        this.studentNo=studentNo;
     }
 
     public Student() {
@@ -55,5 +55,13 @@ public class Student {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Integer getStudentNo() {
+        return studentNo;
+    }
+
+    public void setStudentNo(Integer studentNo) {
+        this.studentNo = studentNo;
     }
 }

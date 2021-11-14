@@ -25,14 +25,14 @@ public class StudentOtpController {
     StudentService studentService;
 
     @PostMapping("/createStudent")
-    public ResponseEntity<?> sendOTP(@RequestBody StudentTemp student)
+    public String sendOTP(@RequestBody StudentTemp student)
     {
-        HttpHeaders headers=new HttpHeaders();
+//        HttpHeaders headers=new HttpHeaders();
 //        try {
 
         System.out.println(student.getUsername());
         System.out.println(student.getName());
-        return ResponseEntity.status(HttpStatus.CREATED).body(studentService.create(student));
+        return studentService.create(student);
 //    }
 //        catch (Exception e) {
 //        headers.add("Message", "false");

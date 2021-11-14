@@ -68,6 +68,17 @@ public class TeacherService {
             return  "User not present";
         }
     }
+    public List<Teacher> foundByDepartment(String department)
+    {
+        List<Teacher> teachers=new ArrayList<>();
+        if(repo.existsTeacherByDepartment(department))
+        {
+            teachers = repo.findTeacherByDepartment(department);
+        }
+
+        return teachers;
+
+    }
     
 
 }

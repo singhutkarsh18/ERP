@@ -1,0 +1,6 @@
+2021-11-14 17:45:31 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "'' (STUDENT_DETAILS: ""STUDENT_NO"" INTEGER NOT NULL)"; SQL statement:
+INSERT INTO "PUBLIC"."STUDENT_DETAILS"("STUDENT_NO","ADDRESS","BRANCH","CATEGORY","CITY","COURSE","DISTRICT","DOB","FATHER","FATHER_NO","GENDER","MOB_NO","MOTHER","MOTHER_NO","NAME","PINCODE","SEM","UNI_ROLL_NO","USERNAME")VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) [22018-200]
+2021-11-14 17:45:31 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "'' (STUDENT_DETAILS: ""STUDENT_NO"" INTEGER NOT NULL)"; SQL statement:
+INSERT INTO "PUBLIC"."STUDENT_DETAILS"("STUDENT_NO","ADDRESS","BRANCH","CATEGORY","CITY","COURSE","DISTRICT","DOB","FATHER","FATHER_NO","GENDER","MOB_NO","MOTHER","MOTHER_NO","NAME","PINCODE","SEM","UNI_ROLL_NO","USERNAME")VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) [22018-200]

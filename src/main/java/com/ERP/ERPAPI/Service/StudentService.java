@@ -65,6 +65,7 @@ public class StudentService {
                     if(!otpService.otpExpired(student2.getOTP(),student2.getUsername()))
                     {
                         int otp = otpService.generateOTP(student2.getUsername());
+                        student2.setId(student2.getId());
                         student2.setOTP(otp);
                         String message = "OTP for ERP is " + otp;
                         mail.setRecipient(student2.getUsername());
@@ -174,7 +175,7 @@ public class StudentService {
         student.setUsername(student1.getUsername());
         student.setPassword(student1.getPassword());
         String regexEmail="^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}";
-        if(isValid(email,regexEmail)&&studentRepository.existsStudentByUsername(email)) {
+        if(isValid(email,regexEmail)&&studentRepository.existsStudentByUsername(email)&&!repo.existsStudentByUsername(email)) {
             int otp = otpService.generateOTP(email);
             student.setValid(false);
             student.setOTP(otp);
@@ -187,6 +188,10 @@ public class StudentService {
             System.out.println(mail.getMessage());
             otpService.sendMail(mail);
             return "Valid Email\nOtp Sent";
+        }
+        else if(repo.existsStudentByUsername(email))
+        {
+            return "OTP already sent";
         }
         else
         {
@@ -255,6 +260,13 @@ public class StudentService {
     public List<Announcement> announcementList()
     {
         return announcementRepository.findAll();
+    }
+    public void addStudentNo(String username,Integer sno)
+    {
+        Student student= studentRepository.findByUsername(username);
+        student.setId(student.getId());
+        student.setStudentNo(sno);
+        studentRepository.save(student);
     }
 
 
