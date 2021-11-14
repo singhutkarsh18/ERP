@@ -33,12 +33,14 @@ public class AdminJwtAuthenticationController {
     private AdminRepository repository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    AdminRepository adminRepository;
 
     @PostMapping("/authenticateAdmin")
     public ResponseEntity<?> createAdminAuthenticationToken(@RequestBody AdminJwtRequest authenticationRequest) throws Exception {
 
-        boolean auth =authenticateAdmin(authenticationRequest.getUsername(), authenticationRequest.getPassword());
-        if(auth) {
+        String auth =authenticateAdmin(authenticationRequest.getUsername(), authenticationRequest.getPassword());
+        if(auth.equals("true")) {
             final UserDetails userDetails = adminJwtUserDetailService
                     .loadUserByUsername(authenticationRequest.getUsername());
 
@@ -48,21 +50,24 @@ public class AdminJwtAuthenticationController {
         }
         else
         {
-            return new ResponseEntity<>("Incorect username or password", HttpStatus.OK);
+            return new ResponseEntity<>(auth, HttpStatus.OK);
         }
     }
 
-    private boolean authenticateAdmin(String username, String password) throws Exception {
-        Admin admin= repository.findByUsername(username);
-        if(passwordEncoder.matches(password, admin.getPassword()))
-        {
-            return true;
+    private String authenticateAdmin(String username, String password) throws Exception {
+        try {
+            Admin admin = adminRepository.findByUsername(username);
+            if (passwordEncoder.matches(password, admin.getPassword())) {
+                return "true";
+            } else {
+                System.out.println(username);
+                System.out.println(passwordEncoder.matches(password, admin.getPassword()));
+                return "false";
+            }
         }
-        else
+        catch (Exception e)
         {
-            System.out.println(username);
-            System.out.println(passwordEncoder.matches(password, admin.getPassword()));
-            return false;
+            return "User not found";
         }
 
     }

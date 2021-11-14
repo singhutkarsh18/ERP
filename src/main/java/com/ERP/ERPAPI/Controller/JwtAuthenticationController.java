@@ -4,14 +4,15 @@ import com.ERP.ERPAPI.JWT.AdminJwtUserDetailService;
 import com.ERP.ERPAPI.JWT.JwtUtil;
 import com.ERP.ERPAPI.JWT.StudentJwtUserDetailsService;
 import com.ERP.ERPAPI.Model.JwtResponse;
+import com.ERP.ERPAPI.Model.Student;
 import com.ERP.ERPAPI.Model.StudentJwtRequest;
+import com.ERP.ERPAPI.Repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,28 +33,45 @@ public class JwtAuthenticationController {
     private StudentJwtUserDetailsService userStudentDetailsService;
     @Autowired
     private AdminJwtUserDetailService adminJwtUserDetailsService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private StudentRepository studentRepository;
 
     @PostMapping("/authenticateStudent")
     public ResponseEntity<?> createStudentAuthenticationToken(@RequestBody StudentJwtRequest authenticationRequest) throws Exception {
 
-        authenticateStudent(authenticationRequest.getUsername(), authenticationRequest.getPassword());
+        String auth =authenticateStudent(authenticationRequest.getUsername(), authenticationRequest.getPassword());
+        if(auth.equals("true")) {
+            final UserDetails userDetails = userStudentDetailsService
+                    .loadUserByUsername(authenticationRequest.getUsername());
 
-        final UserDetails userDetails = userStudentDetailsService
-                .loadUserByUsername(authenticationRequest.getUsername());
+            final String token = jwtUtil.generateToken(userDetails);
 
-        final String token = jwtUtil.generateToken(userDetails);
-
-        return ResponseEntity.ok(new JwtResponse(token));
+            return ResponseEntity.ok(new JwtResponse(token));
+        }
+        else
+        {
+            return new ResponseEntity<>(auth, HttpStatus.OK);
+        }
     }
 
-    private void authenticateStudent(String username, String password) throws Exception {
+    private String authenticateStudent(String username, String password) throws Exception {
+
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-        } catch (DisabledException e) {
-            throw new Exception("USER_DISABLED", e);
-        } catch (BadCredentialsException e) {
-            System.out.println("Invalid");
-            throw new Exception("INVALID_CREDENTIALS", e);
+            Student student = studentRepository.findByUsername(username);
+            if (passwordEncoder.matches(password, student.getPassword())) {
+                return "true";
+            } else {
+                System.out.println(username);
+                System.out.println(passwordEncoder.matches(password, student.getPassword()));
+                return "false";
+            }
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+            return "User not found";
         }
     }
 

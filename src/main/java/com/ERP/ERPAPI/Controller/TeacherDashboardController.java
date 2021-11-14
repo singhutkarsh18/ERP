@@ -27,6 +27,7 @@ public class TeacherDashboardController {
     {
         HttpHeaders headers=new HttpHeaders();
         try{
+            attendanceRepo.save(attendance);
             return ResponseEntity.status(HttpStatus.CREATED).body("Success");
         }
         catch(Exception e)
@@ -52,6 +53,5 @@ public class TeacherDashboardController {
         }
 
     }
-
 
 }

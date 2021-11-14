@@ -1,14 +1,11 @@
 package com.ERP.ERPAPI.Controller;
 
-import com.ERP.ERPAPI.Model.Admin;
-import com.ERP.ERPAPI.Model.Mail;
+import com.ERP.ERPAPI.Model.AdminTemp;
 import com.ERP.ERPAPI.Model.OTP;
 import com.ERP.ERPAPI.Model.PasswordDTO;
 import com.ERP.ERPAPI.Repository.AdminRepository;
 import com.ERP.ERPAPI.Service.AdminService;
-import com.ERP.ERPAPI.Service.OtpService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
@@ -18,24 +15,19 @@ import java.util.Map;
 @CrossOrigin(origins = "*")
 public class AdminOtpController {
 
-    Admin newAdmin = new Admin();
-    Mail mail=new Mail();
+
     @Autowired
     AdminRepository repo;
-    @Autowired
-    private OtpService otpService;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
     @Autowired
     AdminService adminService;
 
     @PostMapping("/create/Admin")
-    public String createAdmin(@RequestBody Admin admin) throws MessagingException
+    public String createAdmin(@RequestBody AdminTemp admin)
     {
       return adminService.create(admin);
     }
     @PostMapping("/forgot/AdminPassword")
-    public String forgotPassword(@RequestBody Map<String,String> username) throws MessagingException
+    public String forgotPassword(@RequestBody Map<String,String> username)
     {
         return adminService.forgotPassword(username.get("username"));
     }

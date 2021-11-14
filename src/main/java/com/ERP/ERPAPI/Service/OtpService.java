@@ -58,5 +58,14 @@ public class OtpService {
     public void clearOTP(String key){
         otpCache.invalidate(key);
     }
+    public boolean otpExpired(int otp,String key)
+    {
+        if(otp==this.getOtp(key))
+        {
+            return true;
+        }
+        else
+            return false;
+    }
 }
 

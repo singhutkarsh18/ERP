@@ -2,7 +2,7 @@ package com.ERP.ERPAPI.Controller;
 
 import com.ERP.ERPAPI.Model.OTP;
 import com.ERP.ERPAPI.Model.PasswordDTO;
-import com.ERP.ERPAPI.Model.Student;
+import com.ERP.ERPAPI.Model.StudentTemp;
 import com.ERP.ERPAPI.Repository.StudentRepository;
 import com.ERP.ERPAPI.Service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class StudentOtpController {
     StudentService studentService;
 
     @PostMapping("/createStudent")
-    public ResponseEntity<?> sendOTP(@RequestBody Student student)
+    public ResponseEntity<?> sendOTP(@RequestBody StudentTemp student)
     {
         HttpHeaders headers=new HttpHeaders();
 //        try {

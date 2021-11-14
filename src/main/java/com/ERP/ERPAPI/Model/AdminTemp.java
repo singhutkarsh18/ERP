@@ -5,7 +5,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
-public class Admin {
+public class AdminTemp
+{
 
 
 
@@ -15,15 +16,18 @@ public class Admin {
     private String name;
     private String username;
     private String password;
+    private Boolean valid;
+    private Integer OTP;
 
-    public Admin() {
+    public AdminTemp() {
     }
 
-    public Admin( String name,String username, String password) {
+    public AdminTemp( String name,String username, String password, Boolean valid, Integer OTP) {
         this.name=name;
         this.username = username;
         this.password = password;
-
+        this.valid = valid;
+        this.OTP = OTP;
     }
 
     public String getName() {
@@ -56,5 +60,21 @@ public class Admin {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Boolean getValid() {
+        return valid;
+    }
+
+    public void setValid(Boolean valid) {
+        this.valid = valid;
+    }
+
+    public Integer getOTP() {
+        return OTP;
+    }
+
+    public void setOTP(Integer OTP) {
+        this.OTP = OTP;
     }
 }

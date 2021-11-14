@@ -6,6 +6,7 @@ import com.ERP.ERPAPI.Service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,7 +26,7 @@ public class AdminDashboardController {
     {
        return this.service.create(teacher);
     }
-    @PostMapping("/show/teachers")
+    @GetMapping("/show/teachers")
     public List<Teacher> showAllTeachers()
     {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
@@ -40,7 +41,7 @@ public class AdminDashboardController {
     {
         return this.service.remove(username);
     }
-    @PostMapping("/show/Reports")
+    @GetMapping("/show/Reports")
     public List<Report> viewReport()
     {
         return adminService.showReports();
