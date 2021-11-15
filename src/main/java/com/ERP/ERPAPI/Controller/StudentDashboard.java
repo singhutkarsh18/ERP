@@ -40,23 +40,35 @@ public class StudentDashboard {
     }
 
     @PostMapping("/details/personal/student")
-    public String personalDetails(@RequestBody StudentDetails studentDetails)
+    public ResponseEntity<?> personalDetails(@RequestBody StudentDetails studentDetails)
     {
-        //Student number cannot be left empty!!
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
-                .getPrincipal();
-        String username = userDetails.getUsername();
-        studentService.addStudentNo(username,studentDetails.getStudentNo());
-        return studentDetailService.addDetails(studentDetails);
+        try {
+            //Student number cannot be left empty!!
+            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                    .getPrincipal();
+            String username = userDetails.getUsername();
+            studentService.addStudentNo(username, studentDetails.getStudentNo());
+            return ResponseEntity.ok(studentDetailService.addDetails(studentDetails));
+        }
+        catch (Exception e)
+        {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to add details");
+        }
     }
     @PostMapping("/details/academic/student")
-    public String academicDetails(@RequestBody StudentAcademics studentAcademics)
+    public ResponseEntity<?> academicDetails(@RequestBody StudentAcademics studentAcademics)
     {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
-                .getPrincipal();
-        String username = userDetails.getUsername();
-        studentService.addStudentNo(username,studentAcademics.getStudentNo());
-        return studentDetailService.addAcademics(studentAcademics);
+        try {
+            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                    .getPrincipal();
+            String username = userDetails.getUsername();
+            studentService.addStudentNo(username, studentAcademics.getStudentNo());
+            return ResponseEntity.ok(studentDetailService.addAcademics(studentAcademics));
+        }
+        catch(Exception e)
+        {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to add details");
+        }
 
     }
     @GetMapping("/show/studentDetails/personal")
@@ -66,7 +78,7 @@ public class StudentDashboard {
             UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
                     .getPrincipal();
             String username = userDetails.getUsername();
-            return ResponseEntity.ok(studentDetailService.showDetails(username));
+            return ResponseEntity.status(HttpStatus.OK).body(studentDetailService.showDetails(username));
         }
         catch (Exception e)
         {
@@ -80,13 +92,13 @@ public class StudentDashboard {
             UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
                     .getPrincipal();
             String username = userDetails.getUsername();
-            return ResponseEntity.ok( studentDetailService.showAcademics(username));
+
+            return ResponseEntity.status(HttpStatus.OK).body(studentDetailService.showAcademics(username));
         }
         catch(Exception e)
         {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Not authorized");
         }
     }
-
 
 }

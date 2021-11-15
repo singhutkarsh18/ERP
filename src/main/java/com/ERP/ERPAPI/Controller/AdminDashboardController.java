@@ -27,15 +27,12 @@ public class AdminDashboardController {
     @PostMapping("/create/Teacher")
     public String createTeacher(@RequestBody Teacher teacher)
     {
-       return this.service.create(teacher);
+       //Add validation
+        return this.service.create(teacher);
     }
     @GetMapping("/show/teachers")
     public List<Teacher> showAllTeachers()
     {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
-                .getPrincipal();
-        String username=userDetails.getUsername();
-        System.out.println(username+" "+userDetails.getPassword());
 
         return service.showAll();
     }
@@ -78,5 +75,10 @@ public class AdminDashboardController {
     {
         return service.foundByDepartment(Department.get("department"));
     }
+//    @PostMapping("/update/teacher")
+//    public ResponseEntity<?> updateTeacher(@RequestBody Map<String,String> Username)
+//    {
+//
+//    }
 
 }
