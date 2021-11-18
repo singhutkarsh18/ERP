@@ -3,8 +3,6 @@ package com.ERP.ERPAPI.Controller;
 import com.ERP.ERPAPI.Model.*;
 import com.ERP.ERPAPI.Service.StudentDetailService;
 import com.ERP.ERPAPI.Service.StudentService;
-import net.bytebuddy.asm.Advice;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,22 +53,22 @@ public class StudentDashboard {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to add details");
         }
     }
-    @PostMapping("/details/academic/student")
-    public ResponseEntity<?> academicDetails(@RequestBody StudentAcademics studentAcademics)
-    {
-        try {
-            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
-                    .getPrincipal();
-            String username = userDetails.getUsername();
-            studentService.addStudentNo(username, studentAcademics.getStudentNo());
-            return ResponseEntity.ok(studentDetailService.addAcademics(studentAcademics));
-        }
-        catch(Exception e)
-        {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to add details");
-        }
-
-    }
+//    @PostMapping("/details/academic/student")
+//    public ResponseEntity<?> academicDetails(@RequestBody StudentAcademics studentAcademics)
+//    {
+//        try {
+//            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+//                    .getPrincipal();
+//            String username = userDetails.getUsername();
+//            studentService.addStudentNo(username, studentAcademics.getStudentNo());
+//            return ResponseEntity.ok(studentDetailService.addAcademics(studentAcademics));
+//        }
+//        catch(Exception e)
+//        {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to add details");
+//        }
+//
+//    }
     @GetMapping("/show/studentDetails/personal")
     public ResponseEntity<?> showStudentDetails()
     {
@@ -85,19 +83,40 @@ public class StudentDashboard {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Not authorized");
         }
     }
-    @GetMapping("/show/studentDetails/academic")
-    public ResponseEntity<?> showAcademicDetails()
+//    @GetMapping("/show/studentDetails/academic")
+//    public ResponseEntity<?> showAcademicDetails()
+//    {
+//        try {
+//            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+//                    .getPrincipal();
+//            String username = userDetails.getUsername();
+//
+//            return ResponseEntity.status(HttpStatus.OK).body(studentDetailService.showAcademics(username));
+//        }
+//        catch(Exception e)
+//        {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Not authorized");
+//        }
+//    }
+    @GetMapping("/show/attendance")
+    public ResponseEntity<?> showAttendance()
     {
-        try {
+        try{
             UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
                     .getPrincipal();
             String username = userDetails.getUsername();
-
-            return ResponseEntity.status(HttpStatus.OK).body(studentDetailService.showAcademics(username));
+            return ResponseEntity.status(HttpStatus.OK).body(studentService.getAttendance(username));
         }
         catch(Exception e)
         {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Not authorized");
+            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                    .getPrincipal();
+            String username = userDetails.getUsername();
+            List<Attendance> attendances =studentService.getAttendance(username);
+            if (attendances==null)
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No Attendance found");
+            else
+                return ResponseEntity.status(HttpStatus.OK).body("Error");
         }
     }
 

@@ -1,5 +1,8 @@
 package com.ERP.ERPAPI.JWT;
 
+import com.ERP.ERPAPI.Repository.AdminRepository;
+import com.ERP.ERPAPI.Repository.StudentRepository;
+import com.ERP.ERPAPI.Repository.TeacherRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,9 +23,20 @@ public class StudentJwtRequestFilter extends OncePerRequestFilter {
 
     @Autowired
     private StudentJwtUserDetailsService jwtUserDetailsService;
+    @Autowired
+    private TeacherJwtUserDetailService teacherJwtUserDetailService;
+    @Autowired
+    private AdminJwtUserDetailService adminJwtUserDetailService;
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Autowired
+    private StudentRepository studentRepository;
+    @Autowired
+    private TeacherRepository teacherRepository;
+    @Autowired
+    private AdminRepository adminRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
@@ -46,8 +60,13 @@ public class StudentJwtRequestFilter extends OncePerRequestFilter {
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-
-            UserDetails userDetails = this.jwtUserDetailsService.loadUserByUsername(username);
+            UserDetails userDetails;
+            if(studentRepository.existsStudentByUsername(username))
+                userDetails= this.jwtUserDetailsService.loadUserByUsername(username);
+            else if(teacherRepository.existsTeacherByUsername(username))
+                userDetails = this.teacherJwtUserDetailService.loadUserByUsername(username);
+            else
+                userDetails= this.adminJwtUserDetailService.loadUserByUsername(username);
 
             if (jwtUtil.validateToken(jwtToken, userDetails)) {
 

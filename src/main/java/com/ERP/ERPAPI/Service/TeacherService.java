@@ -3,6 +3,7 @@ package com.ERP.ERPAPI.Service;
 import com.ERP.ERPAPI.Model.*;
 import com.ERP.ERPAPI.Repository.StudentDetailRepository;
 import com.ERP.ERPAPI.Repository.StudentRepository;
+import com.ERP.ERPAPI.Repository.TeacherDetailsRepo;
 import com.ERP.ERPAPI.Repository.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,6 +21,8 @@ public class TeacherService {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private StudentDetailRepository studentDetailRepository;
+    @Autowired
+    TeacherDetailsRepo teacherDetailsRepo;
 
     public String create(Teacher teacher)
     {
@@ -87,10 +90,11 @@ public class TeacherService {
         studentDetails=studentDetailRepository.findByCls(cls);
         return studentDetails;
     }
-//    public String update(String username)
-//    {
-//        Teacher teacher = repo.findByUsername(username);
-//    }
+    public String addDetails(TeacherDetails teacherDetails)
+    {
+            teacherDetailsRepo.save(teacherDetails);
+            return "success";
+    }
 
     
 

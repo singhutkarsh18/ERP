@@ -1,10 +1,7 @@
 package com.ERP.ERPAPI.Service;
 
 import com.ERP.ERPAPI.Model.*;
-import com.ERP.ERPAPI.Repository.AnnouncementRepository;
-import com.ERP.ERPAPI.Repository.ReportsRepository;
-import com.ERP.ERPAPI.Repository.StudentRepository;
-import com.ERP.ERPAPI.Repository.StudentTempRepository;
+import com.ERP.ERPAPI.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,6 +29,8 @@ public class StudentService {
     AnnouncementRepository announcementRepository;
     @Autowired
     StudentRepository  studentRepository;
+    @Autowired
+    AttendanceRepo attendanceRepo;
 
     public String create(StudentTemp student){
         StudentTemp student1 =new StudentTemp();
@@ -267,6 +266,10 @@ public class StudentService {
         student.setId(student.getId());
         student.setStudentNo(sno);
         studentRepository.save(student);
+    }
+    public List<Attendance> getAttendance(String username)
+    {
+        return attendanceRepo.findAttendanceByUsername(username);
     }
 
 
