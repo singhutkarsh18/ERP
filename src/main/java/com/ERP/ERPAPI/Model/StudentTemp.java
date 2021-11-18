@@ -5,7 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
-public class Student {
+public class StudentTemp {
 
     @Id
     @GeneratedValue
@@ -13,20 +13,32 @@ public class Student {
     private String name;
     private String username;
     private String password;
-    private Integer studentNo;
+    private Boolean Valid;
+    private Integer OTP;
 
-    public Student(String name, String username, String password,Integer studentNo) {
-        this.name = name;
-        this.username = username;
-        this.password = password;
-        this.studentNo=studentNo;
+
+    public String getPassword() {
+        return password;
     }
 
-    public Student() {
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+
+    public StudentTemp() {
     }
 
     public Integer getId() {
         return id;
+    }
+
+    public StudentTemp(String name, String username, String password, Boolean Valid, Integer OTP) {
+        this.name = name;
+        this.username = username;
+        this.password = password;
+        this.Valid = Valid;
+        this.OTP = OTP;
     }
 
     public void setId(Integer id) {
@@ -48,20 +60,18 @@ public class Student {
     public void setUsername(String username) {
         this.username = username;
     }
-
-    public String getPassword() {
-        return password;
+    public Boolean getValid() {
+        return Valid;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setValid(Boolean valid) {
+        Valid = valid;
+    }
+    public Integer getOTP() {
+        return OTP;
     }
 
-    public Integer getStudentNo() {
-        return studentNo;
-    }
-
-    public void setStudentNo(Integer studentNo) {
-        this.studentNo = studentNo;
+    public void setOTP(Integer OTP) {
+        this.OTP = OTP;
     }
 }

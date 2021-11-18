@@ -32,8 +32,8 @@ public class TeacherJwtController {
     @PostMapping("/authenticate/Teacher")
     public ResponseEntity<?> createTeacherAuthenticationToken(@RequestBody AdminJwtRequest authenticationRequest) throws Exception {
 
-        boolean auth =authenticateAdmin(authenticationRequest.getUsername(), authenticationRequest.getPassword());
-        if(auth) {
+        String auth =authenticateAdmin(authenticationRequest.getUsername(), authenticationRequest.getPassword());
+        if(auth.equals("true")) {
             final UserDetails userDetails = teacherJwtUserDetailService
                     .loadUserByUsername(authenticationRequest.getUsername());
 
@@ -43,25 +43,25 @@ public class TeacherJwtController {
         }
         else
         {
-            return new ResponseEntity<>("Incorect username or password", HttpStatus.OK);
+            return new ResponseEntity<>(auth, HttpStatus.OK);
         }
     }
 
-    private boolean authenticateAdmin(String username, String password) throws Exception {
+    private String authenticateAdmin(String username, String password) throws Exception {
         Teacher teacher = teacherRepository.findByUsername(username);
         try {
             if (passwordEncoder.matches(password, teacher.getPassword())) {
-                return true;
+                return "true";
             } else {
                 System.out.println(username);
                 System.out.println(passwordEncoder.matches(password, teacher.getPassword()));
-                return false;
+                return "false";
             }
         }
         catch(Exception e)
         {
-            System.out.println();
-            return false;
+            System.out.println(e);
+            return "User not found";
         }
 
     }

@@ -2,13 +2,10 @@ package com.ERP.ERPAPI.Controller;
 
 import com.ERP.ERPAPI.Model.OTP;
 import com.ERP.ERPAPI.Model.PasswordDTO;
-import com.ERP.ERPAPI.Model.Student;
+import com.ERP.ERPAPI.Model.StudentTemp;
 import com.ERP.ERPAPI.Repository.StudentRepository;
 import com.ERP.ERPAPI.Service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -25,14 +22,14 @@ public class StudentOtpController {
     StudentService studentService;
 
     @PostMapping("/createStudent")
-    public ResponseEntity<?> sendOTP(@RequestBody Student student)
+    public String sendOTP(@RequestBody StudentTemp student)
     {
-        HttpHeaders headers=new HttpHeaders();
+//        HttpHeaders headers=new HttpHeaders();
 //        try {
 
         System.out.println(student.getUsername());
         System.out.println(student.getName());
-        return ResponseEntity.status(HttpStatus.CREATED).body(studentService.create(student));
+        return studentService.create(student);
 //    }
 //        catch (Exception e) {
 //        headers.add("Message", "false");

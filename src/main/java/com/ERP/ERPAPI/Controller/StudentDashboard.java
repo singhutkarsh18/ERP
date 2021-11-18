@@ -1,22 +1,25 @@
 package com.ERP.ERPAPI.Controller;
 
-import com.ERP.ERPAPI.Model.Announcement;
-import com.ERP.ERPAPI.Model.PasswordDTO;
-import com.ERP.ERPAPI.Model.Report;
+import com.ERP.ERPAPI.Model.*;
+import com.ERP.ERPAPI.Service.StudentDetailService;
 import com.ERP.ERPAPI.Service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@CrossOrigin("*")
 public class StudentDashboard {
 
     @Autowired
     StudentService studentService;
+    @Autowired
+    StudentDetailService studentDetailService;
 
     @PostMapping("/update/Password/Student")
     public String updateStudentPassword(@RequestBody PasswordDTO passwordDTO)
@@ -26,7 +29,6 @@ public class StudentDashboard {
     @PostMapping("/report/student")
     public String report(@RequestBody Report report)
     {
-
         return studentService.reportProblem(report);
     }
     @GetMapping("/show/announcement")
@@ -34,4 +36,88 @@ public class StudentDashboard {
     {
         return studentService.announcementList();
     }
+
+    @PostMapping("/details/personal/student")
+    public ResponseEntity<?> personalDetails(@RequestBody StudentDetails studentDetails)
+    {
+        try {
+            //Student number cannot be left empty!!
+            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                    .getPrincipal();
+            String username = userDetails.getUsername();
+            studentService.addStudentNo(username, studentDetails.getStudentNo());
+            return ResponseEntity.ok(studentDetailService.addDetails(studentDetails));
+        }
+        catch (Exception e)
+        {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to add details");
+        }
+    }
+//    @PostMapping("/details/academic/student")
+//    public ResponseEntity<?> academicDetails(@RequestBody StudentAcademics studentAcademics)
+//    {
+//        try {
+//            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+//                    .getPrincipal();
+//            String username = userDetails.getUsername();
+//            studentService.addStudentNo(username, studentAcademics.getStudentNo());
+//            return ResponseEntity.ok(studentDetailService.addAcademics(studentAcademics));
+//        }
+//        catch(Exception e)
+//        {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to add details");
+//        }
+//
+//    }
+    @GetMapping("/show/studentDetails/personal")
+    public ResponseEntity<?> showStudentDetails()
+    {
+        try {
+            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                    .getPrincipal();
+            String username = userDetails.getUsername();
+            return ResponseEntity.status(HttpStatus.OK).body(studentDetailService.showDetails(username));
+        }
+        catch (Exception e)
+        {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Not authorized");
+        }
+    }
+//    @GetMapping("/show/studentDetails/academic")
+//    public ResponseEntity<?> showAcademicDetails()
+//    {
+//        try {
+//            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+//                    .getPrincipal();
+//            String username = userDetails.getUsername();
+//
+//            return ResponseEntity.status(HttpStatus.OK).body(studentDetailService.showAcademics(username));
+//        }
+//        catch(Exception e)
+//        {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Not authorized");
+//        }
+//    }
+    @GetMapping("/show/attendance")
+    public ResponseEntity<?> showAttendance()
+    {
+        try{
+            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                    .getPrincipal();
+            String username = userDetails.getUsername();
+            return ResponseEntity.status(HttpStatus.OK).body(studentService.getAttendance(username));
+        }
+        catch(Exception e)
+        {
+            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                    .getPrincipal();
+            String username = userDetails.getUsername();
+            List<Attendance> attendances =studentService.getAttendance(username);
+            if (attendances==null)
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No Attendance found");
+            else
+                return ResponseEntity.status(HttpStatus.OK).body("Error");
+        }
+    }
+
 }

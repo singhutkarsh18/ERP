@@ -1,8 +1,9 @@
 package com.ERP.ERPAPI.Service;
 
-import com.ERP.ERPAPI.Model.Admin;
-import com.ERP.ERPAPI.Model.Teacher;
-import com.ERP.ERPAPI.Model.Username;
+import com.ERP.ERPAPI.Model.*;
+import com.ERP.ERPAPI.Repository.StudentDetailRepository;
+import com.ERP.ERPAPI.Repository.StudentRepository;
+import com.ERP.ERPAPI.Repository.TeacherDetailsRepo;
 import com.ERP.ERPAPI.Repository.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,6 +19,10 @@ public class TeacherService {
     private TeacherRepository repo;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private StudentDetailRepository studentDetailRepository;
+    @Autowired
+    TeacherDetailsRepo teacherDetailsRepo;
 
     public String create(Teacher teacher)
     {
@@ -68,6 +73,29 @@ public class TeacherService {
             return  "User not present";
         }
     }
+    public List<Teacher> foundByDepartment(String department)
+    {
+        List<Teacher> teachers=new ArrayList<>();
+        if(repo.existsTeacherByDepartment(department))
+        {
+            teachers = repo.findTeacherByDepartment(department);
+        }
+
+        return teachers;
+
+    }
+    public List<StudentDetails> showClass(String cls)
+    {
+        List<StudentDetails> studentDetails=new ArrayList<>();
+        studentDetails=studentDetailRepository.findByCls(cls);
+        return studentDetails;
+    }
+    public String addDetails(TeacherDetails teacherDetails)
+    {
+            teacherDetailsRepo.save(teacherDetails);
+            return "success";
+    }
+
     
 
 }

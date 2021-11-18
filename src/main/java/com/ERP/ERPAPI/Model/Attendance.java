@@ -5,23 +5,23 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
-public class Attendance {
-
+public class Attendance
+{
     @Id
     @GeneratedValue
     private Integer id;
-    private Integer sno;
+    private String username;
     private String date;
     private Boolean present;
 
-    public Attendance(Integer sno, String date, Boolean present) {
-        this.sno = sno;
+    public Attendance(Integer id, String username, String date, Boolean present) {
+        this.id= id;
+        this.username = username;
         this.date = date;
         this.present = present;
     }
 
     public Attendance() {
-
     }
 
     public Integer getId() {
@@ -29,15 +29,15 @@ public class Attendance {
     }
 
     public void setId(Integer id) {
-        this.id = id;
+        this.id= id;
     }
 
-    public Integer getSno() {
-        return sno;
+    public String getUsername() {
+        return username;
     }
 
-    public void setSno(Integer sno) {
-        this.sno = sno;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getDate() {
