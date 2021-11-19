@@ -2,11 +2,13 @@ package com.ERP.ERPAPI.Service;
 
 import com.ERP.ERPAPI.Model.*;
 import com.ERP.ERPAPI.Repository.*;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @Service
@@ -87,11 +89,19 @@ public class TeacherService {
         return teachers;
 
     }
-    public List<StudentDetails> showClass(String cls)
+    public List<AttendanceDTO> showClass(String cls)
     {
         List<StudentDetails> studentDetails=new ArrayList<>();
         studentDetails=studentDetailRepository.findByCls(cls);
-        return studentDetails;
+        Iterator itr=studentDetails.iterator();
+        List<AttendanceDTO> attendanceDTOs=new ArrayList<>();
+        while(itr.hasNext())
+        {
+            StudentDetails studentDetails1= (StudentDetails) itr.next();
+            AttendanceDTO attendanceDTO=new AttendanceDTO(studentDetails1.getUsername(),studentDetails1.getName(),studentDetails1.getStudentNo());
+            attendanceDTOs.add(attendanceDTO);
+        }
+        return attendanceDTOs;
     }
     public String addDetails(TeacherDetails teacherDetails)
     {

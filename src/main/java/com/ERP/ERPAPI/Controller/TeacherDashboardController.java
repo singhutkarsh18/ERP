@@ -10,15 +10,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
+@CrossOrigin("*")
 public class TeacherDashboardController {
 
     @Autowired
@@ -59,12 +56,18 @@ public class TeacherDashboardController {
         }
 
     }
-    @GetMapping("/show/students/class")
-    public List<StudentDetails> showClasswise(@RequestBody Map<String, String> Cls)
+    @PostMapping("/show/students/class")
+    public ResponseEntity<?> showClasswise(@RequestBody Cls cls)
     {
         //variable name is cls
+        try {
+            return ResponseEntity.ok(teacherService.showClass(cls.getCls()));
 
-        return teacherService.showClass(Cls.get("cls"));
+        }
+        catch (Exception e){
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
+        }
     }
     @PostMapping("/add/details/teacher")
     public ResponseEntity<?> addTeacherDetails(@RequestBody TeacherDetails teacherDetails)

@@ -1,6 +1,9 @@
 package com.ERP.ERPAPI.Controller;
 
-import com.ERP.ERPAPI.Model.*;
+import com.ERP.ERPAPI.Model.Attendance;
+import com.ERP.ERPAPI.Model.Report;
+import com.ERP.ERPAPI.Model.StudentDetails;
+import com.ERP.ERPAPI.Repository.StudentDetailRepository;
 import com.ERP.ERPAPI.Service.StudentDetailService;
 import com.ERP.ERPAPI.Service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.EscapedErrors;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +24,8 @@ public class StudentDashboard {
     StudentService studentService;
     @Autowired
     StudentDetailService studentDetailService;
+    @Autowired
+    StudentDetailRepository studentDetailRepository;
 
     @PostMapping("/update/Password/Student")
     public ResponseEntity<?> updateStudentPassword(@RequestBody Map<String ,String> password)
@@ -68,10 +72,11 @@ public class StudentDashboard {
     {
         try {
             //Student number cannot be left empty!!
-            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
-                    .getPrincipal();
-            String username = userDetails.getUsername();
-            studentService.addStudentNo(username, studentDetails.getStudentNo());
+//            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+//                    .getPrincipal();
+//            String username = userDetails.getUsername();
+
+            studentService.addStudentNo(studentDetails.getUsername(), studentDetails.getStudentNo());
             return ResponseEntity.ok(studentDetailService.addDetails(studentDetails));
         }
         catch (Exception e)
@@ -106,7 +111,7 @@ public class StudentDashboard {
         }
         catch (Exception e)
         {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Not authorized");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not authorized");
         }
     }
 //    @GetMapping("/show/studentDetails/academic")
@@ -171,5 +176,29 @@ public class StudentDashboard {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
         }
 
+    }
+    @GetMapping("/check/details")
+    public ResponseEntity<?> checkDetails()
+    {
+
+        try {
+            System.out.println("Trigger");
+            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                    .getPrincipal();
+            String username = userDetails.getUsername();
+            if(studentDetailRepository.existsByUsername(username))
+            {
+                return ResponseEntity.status(HttpStatus.OK).body("User details present");
+            }
+            else
+            {
+                return ResponseEntity.status(HttpStatus.OK).body("User details not present");
+            }
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
+        }
     }
 }

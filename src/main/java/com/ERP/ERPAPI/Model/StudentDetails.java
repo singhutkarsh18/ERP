@@ -23,7 +23,6 @@ public class StudentDetails {
     private Long fatherNo;
     private Long motherNo;
     private String address;
-    private String district;
     private String city;
     private Integer pincode;
     private String state;
@@ -34,12 +33,8 @@ public class StudentDetails {
     private String tenthBoard;
     private String twelfthBoard;
     private String passingYear12;
-    private String passingYearDiploma;
-    private String graduation;
-    private String degree;
-    private String diploma;
 
-    public StudentDetails(Integer studentNo, String name, Long uniRollNo, String course, String branch, String dob, String sem, String username, Long mobNo, String gender, String category, String father, String mother, Long fatherNo, Long motherNo, String address, String district, String city, Integer pincode, String state, String cls, String tenth, String passingYear10, String twelfth, String tenthBoard, String twelfthBoard, String passingYear12, String passingYearDiploma, String graduation, String degree, String diploma) {
+    public StudentDetails(Integer studentNo, String name, Long uniRollNo, String course, String branch, String dob, String sem, String username, Long mobNo, String gender, String category, String father, String mother, Long fatherNo, Long motherNo, String address, String city, Integer pincode, String state, String cls, String tenth, String passingYear10, String twelfth, String tenthBoard, String twelfthBoard, String passingYear12) {
         this.studentNo = studentNo;
         this.name = name;
         this.uniRollNo = uniRollNo;
@@ -56,7 +51,6 @@ public class StudentDetails {
         this.fatherNo = fatherNo;
         this.motherNo = motherNo;
         this.address = address;
-        this.district = district;
         this.city = city;
         this.pincode = pincode;
         this.state = state;
@@ -67,10 +61,6 @@ public class StudentDetails {
         this.tenthBoard = tenthBoard;
         this.twelfthBoard = twelfthBoard;
         this.passingYear12 = passingYear12;
-        this.passingYearDiploma = passingYearDiploma;
-        this.graduation = graduation;
-        this.degree = degree;
-        this.diploma = diploma;
     }
 
     public StudentDetails() {
@@ -204,13 +194,6 @@ public class StudentDetails {
         this.address = address;
     }
 
-    public String getDistrict() {
-        return district;
-    }
-
-    public void setDistrict(String district) {
-        this.district = district;
-    }
 
     public String getCity() {
         return city;
@@ -292,35 +275,4 @@ public class StudentDetails {
         this.passingYear12 = passingYear12;
     }
 
-    public String getPassingYearDiploma() {
-        return passingYearDiploma;
-    }
-
-    public void setPassingYearDiploma(String passingYearDiploma) {
-        this.passingYearDiploma = passingYearDiploma;
-    }
-
-    public String getGraduation() {
-        return graduation;
-    }
-
-    public void setGraduation(String graduation) {
-        this.graduation = graduation;
-    }
-
-    public String getDegree() {
-        return degree;
-    }
-
-    public void setDegree(String degree) {
-        this.degree = degree;
-    }
-
-    public String getDiploma() {
-        return diploma;
-    }
-
-    public void setDiploma(String diploma) {
-        this.diploma = diploma;
-    }
 }

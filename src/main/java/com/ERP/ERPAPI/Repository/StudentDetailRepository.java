@@ -9,4 +9,5 @@ import java.util.List;
 public interface StudentDetailRepository extends JpaRepository<StudentDetails,Integer> {
     StudentDetails findByUsername(String username);
     List<StudentDetails> findByCls(String Cls);
+    Boolean existsByUsername(String username);
 }
