@@ -1,9 +1,6 @@
 package com.ERP.ERPAPI.Controller;
 
-import com.ERP.ERPAPI.Model.Attendance;
-import com.ERP.ERPAPI.Model.Password;
-import com.ERP.ERPAPI.Model.StudentDetails;
-import com.ERP.ERPAPI.Model.TeacherDetails;
+import com.ERP.ERPAPI.Model.*;
 import com.ERP.ERPAPI.Repository.AttendanceRepo;
 import com.ERP.ERPAPI.Repository.TeacherDetailsRepo;
 import com.ERP.ERPAPI.Service.TeacherService;
@@ -106,4 +103,36 @@ public class TeacherDashboardController {
         String username=userDetails.getUsername();
         return username;
     }
+    @PostMapping("/allot/class")
+    public ResponseEntity<?> allotClass(@RequestBody ClassAllotment classAllotment)
+    {
+        try{
+            return ResponseEntity.ok(teacherService.classAllot(classAllotment));
+        }
+        catch(Exception e)
+        {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
+        }
+    }
+//    @PostMapping("/show/feedback")
+//    public ResponseEntity<?> showTeacherFeedback()
+//    {
+//        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+//                .getPrincipal();
+//        String username=userDetails.getUsername();
+//        return teacherService.showFeedback(username);
+//    }
+    @PostMapping("/add/marks")
+    public ResponseEntity<?> addMarks(@RequestBody Marks marks)
+    {
+        try{
+            return ResponseEntity.ok(teacherService.giveMarks(marks));
+        }
+        catch (Exception e){
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
+        }
+    }
+
+
 }

@@ -1,10 +1,7 @@
 package com.ERP.ERPAPI.Service;
 
 import com.ERP.ERPAPI.Model.*;
-import com.ERP.ERPAPI.Repository.StudentDetailRepository;
-import com.ERP.ERPAPI.Repository.StudentRepository;
-import com.ERP.ERPAPI.Repository.TeacherDetailsRepo;
-import com.ERP.ERPAPI.Repository.TeacherRepository;
+import com.ERP.ERPAPI.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,7 +19,13 @@ public class TeacherService {
     @Autowired
     private StudentDetailRepository studentDetailRepository;
     @Autowired
-    TeacherDetailsRepo teacherDetailsRepo;
+    private TeacherDetailsRepo teacherDetailsRepo;
+    @Autowired
+    private ClassAllotmentRepo classAllotmentRepo;
+    @Autowired
+    private ClassRepo classRepo;
+    @Autowired
+    private MarksRepo marksRepo;
 
     public String create(Teacher teacher)
     {
@@ -95,7 +98,92 @@ public class TeacherService {
             teacherDetailsRepo.save(teacherDetails);
             return "success";
     }
+    public String classAllot(ClassAllotment classAllotment)
+    {
+        ClassTeachers classTeachers;
+        try{
+        if(classRepo.existsByCls(classAllotment.getCls())) {
+            classTeachers = classRepo.findByCls(classAllotment.getCls());
+        }
+        else {
+            classTeachers=new ClassTeachers(classAllotment.getCls(),"","","","","","");
+        }
+            String sub=classAllotment.getSubject();
+            if(sub.equals("sub1")){
+                classTeachers.setSub1(classAllotment.getUsername());
+                classRepo.save(classTeachers);
+            }
+            else if(sub.equals("sub2")){
+                classTeachers.setSub2(classAllotment.getUsername());
+                classRepo.save(classTeachers);
 
-    
+            }
+            else if(sub.equals("sub3")){
+                classTeachers.setSub3(classAllotment.getUsername());
+                classRepo.save(classTeachers);
+
+            }
+            else if(sub.equals("sub4")){
+                classTeachers.setSub4(classAllotment.getUsername());
+                classRepo.save(classTeachers);
+            }
+            else if(sub.equals("sub5")){
+                classTeachers.setSub5(classAllotment.getUsername());
+                classRepo.save(classTeachers);
+            }
+            else{
+                classTeachers.setSub6(classAllotment.getUsername());
+                classRepo.save(classTeachers);
+            }
+            classAllotmentRepo.save(classAllotment);
+            return "Class Alloted";
+        }
+        catch(Exception e)
+        {
+            System.out.println(e);
+            return "class not alloted";
+        }
+    }
+//    public String showFeedback(String username)
+//    {
+//        ClassAllotment classAllotment=classAllotmentRepo.findByUsername(username);
+//        ClassTeachers classTeachers=classRepo.findByCls(classAllotment.getCls());
+//        if(classTeachers.getSub1().equals(username)){
+//
+//        }
+//        else if(classTeachers.getSub2().equals(username)){
+//
+//        }
+//        else if(classTeachers.getSub2().equals(username)){
+//
+//        }
+//        else if(classTeachers.getSub3().equals(username)){
+//
+//        }
+//        else if(classTeachers.getSub4().equals(username)){
+//
+//        }
+//        else if(classTeachers.getSub5().equals(username)){
+//
+//        }
+//        else{
+//
+//        }
+//        return "";
+//
+//    }
+    public String giveMarks(Marks marks)
+    {
+        Marks marks1;
+        if(marksRepo.existsBySubjectAndUsername(marks.getSubject(), marks.getUsername())) {
+            System.out.println(true);
+            marks1=marksRepo.findBySubjectAndUsername(marks.getSubject(),marks.getUsername());
+            marks1.setMarks(marks.getMarks());
+        }
+        else
+            marks1=marks;
+        marksRepo.save(marks1);
+        return "marks saved";
+    }
 
 }

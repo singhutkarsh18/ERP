@@ -8,9 +8,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.EscapedErrors;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin("*")
@@ -22,19 +24,43 @@ public class StudentDashboard {
     StudentDetailService studentDetailService;
 
     @PostMapping("/update/Password/Student")
-    public String updateStudentPassword(@RequestBody PasswordDTO passwordDTO)
+    public ResponseEntity<?> updateStudentPassword(@RequestBody Map<String ,String> password)
     {
-        return studentService.changePassword(passwordDTO.getUsername(),passwordDTO.getPassword());
+        try{
+            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                    .getPrincipal();
+            String username = userDetails.getUsername();
+            return ResponseEntity.ok(studentService.changePassword(username,password.get("password")));
+
+        }
+        catch (Exception e)
+        {
+             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
+        }
     }
     @PostMapping("/report/student")
-    public String report(@RequestBody Report report)
+    public ResponseEntity<String> report(@RequestBody Report report)
     {
-        return studentService.reportProblem(report);
+        try {
+            return ResponseEntity.ok(studentService.reportProblem(report));
+        }
+        catch(Exception e)
+        {
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
+        }
     }
     @GetMapping("/show/announcement")
-    public List<Announcement> showAnnouncements()
+    public ResponseEntity<?> showAnnouncements()
     {
-        return studentService.announcementList();
+        try {
+            return ResponseEntity.ok(studentService.announcementList());
+        }
+        catch(Exception e)
+        {
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
+        }
     }
 
     @PostMapping("/details/personal/student")
@@ -119,5 +145,31 @@ public class StudentDashboard {
                 return ResponseEntity.status(HttpStatus.OK).body("Error");
         }
     }
+//    @PostMapping("/add/feedback")
+//    public ResponseEntity<?> addFeedback(@RequestBody Feedback feedback){
+//        try{
+//            return ResponseEntity.ok(studentService.addFeedback(feedback));
+//        }
+//        catch(Exception e)
+//        {
+//            return ResponseEntity.status(HttpStatus.OK).body("Error");
+//        }
+//    }
+    @GetMapping("/get/result")
+    public ResponseEntity<?> getResult(){
+        try{
+            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                    .getPrincipal();
+            String username = userDetails.getUsername();
+            if(studentService.showMarks(username)==null)
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No marks found");
+            else
+                return ResponseEntity.status(HttpStatus.OK).body(studentService.showMarks(username));
+        }
+        catch(Exception e)
+        {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
+        }
 
+    }
 }

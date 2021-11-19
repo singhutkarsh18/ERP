@@ -6,7 +6,6 @@ import javax.persistence.Id;
 
 @Entity
 public class Feedback
-
 {
 
     @Id
@@ -19,11 +18,12 @@ public class Feedback
     private Integer sub4;
     private Integer sub5;
     private Integer sub6;
+    private String cls;
 
     public Feedback() {
     }
 
-    public Feedback(Integer sub1,String username, Integer sub2, Integer sub3, Integer sub4, Integer sub5, Integer sub6) {
+    public Feedback(Integer sub1,String username, Integer sub2, Integer sub3, Integer sub4, Integer sub5, Integer sub6,String cls) {
         this.sub1 = sub1;
         this.sub2 = sub2;
         this.sub3 = sub3;
@@ -31,6 +31,7 @@ public class Feedback
         this.sub5 = sub5;
         this.sub6 = sub6;
         this.username=username;
+        this.cls=cls;
     }
 
     public Integer getId() {
@@ -95,5 +96,13 @@ public class Feedback
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getCls() {
+        return cls;
+    }
+
+    public void setCls(String cls) {
+        this.cls = cls;
     }
 }
