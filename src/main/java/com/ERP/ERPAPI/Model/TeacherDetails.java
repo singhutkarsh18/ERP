@@ -10,6 +10,7 @@ public class TeacherDetails {
 
     @Id
     private Integer teacherId;
+    private String name;
     private String department;
     private String dob;
     private String username;
@@ -29,8 +30,9 @@ public class TeacherDetails {
     private String pgYear;
     private String phdYear;
 
-    public TeacherDetails(Integer teacherId, String department, String dob, String username, String category, String city, String district, String ug, String pg, String phd, String specialization, String mob, String gender, String address, String state, Integer pincode, String ugYear, String pgYear, String phdYear) {
+    public TeacherDetails(Integer teacherId,String name, String department, String dob, String username, String category, String city, String district, String ug, String pg, String phd, String specialization, String mob, String gender, String address, String state, Integer pincode, String ugYear, String pgYear, String phdYear) {
         this.teacherId = teacherId;
+        this.name=name;
         this.department = department;
         this.dob = dob;
         this.username = username;
@@ -204,5 +206,13 @@ public class TeacherDetails {
 
     public void setPhdYear(String phdYear) {
         this.phdYear = phdYear;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

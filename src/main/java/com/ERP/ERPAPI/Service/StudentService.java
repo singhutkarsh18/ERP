@@ -31,6 +31,10 @@ public class StudentService {
     StudentRepository  studentRepository;
     @Autowired
     AttendanceRepo attendanceRepo;
+    @Autowired
+    FeedbackRepo feedbackRepo;
+    @Autowired
+    private MarksRepo marksRepo;
 
     public String create(StudentTemp student){
         StudentTemp student1 =new StudentTemp();
@@ -237,7 +241,7 @@ public class StudentService {
     }
     public String changePassword(String username,String password)
     {
-        if(repo.existsStudentByUsername(username)) {
+        if(studentRepository.existsStudentByUsername(username)) {
             Student student = studentRepository.findByUsername(username);
             student.setPassword(passwordEncoder.encode(password));
             studentRepository.save(student);
@@ -271,6 +275,24 @@ public class StudentService {
     {
         return attendanceRepo.findAttendanceByUsername(username);
     }
+    public String addFeedback(Feedback feedback)
+    {
 
+        try {
+            feedbackRepo.save(feedback);
+            return "feedback added";
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+            return "Error";
+        }
+    }
+    public List<Marks> showMarks(String username)
+    {
+        List<Marks> marks=marksRepo.findAllByUsername(username);
+
+        return marks;
+    }
 
 }

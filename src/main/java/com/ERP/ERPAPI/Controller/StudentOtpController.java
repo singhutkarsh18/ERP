@@ -6,6 +6,9 @@ import com.ERP.ERPAPI.Model.StudentTemp;
 import com.ERP.ERPAPI.Repository.StudentRepository;
 import com.ERP.ERPAPI.Service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -22,43 +25,71 @@ public class StudentOtpController {
     StudentService studentService;
 
     @PostMapping("/createStudent")
-    public String sendOTP(@RequestBody StudentTemp student)
+    public ResponseEntity<?> sendOTP(@RequestBody StudentTemp student)
     {
-//        HttpHeaders headers=new HttpHeaders();
-//        try {
+        HttpHeaders headers=new HttpHeaders();
+        try {
 
         System.out.println(student.getUsername());
         System.out.println(student.getName());
-        return studentService.create(student);
-//    }
-//        catch (Exception e) {
-//        headers.add("Message", "false");
-//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).body("Failed to add the user");
-//    }
+        return ResponseEntity.status(HttpStatus.OK).body(studentService.create(student));
+        }
+        catch (Exception e) {
+        headers.add("Message", "false");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(headers).body("Failed to add the user");
+        }
     }
 
     @PostMapping("/forgotStudentPassword")
-    public String forgotPassword(@RequestBody Map<String,String> request)
+    public ResponseEntity<?> forgotPassword(@RequestBody Map<String,String> request)
     {
-        return studentService.forgot(request.get("username"));
+        try{
+        return ResponseEntity.status(HttpStatus.OK).body(studentService.forgot(request.get("username")));
+        }
+        catch(Exception e)
+        {
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
+        }
     }
     @PostMapping("/validateStudentOtp")
-    public @ResponseBody Boolean validateOtp(@RequestBody OTP otp) {
-        System.out.println(otp.getUserOtp());
-        return studentService.validStudentOtp(otp.getUserOtp(),otp.getUsername());
+    public @ResponseBody ResponseEntity<?> validateOtp(@RequestBody OTP otp) {
+        try{
+            System.out.println(otp.getUserOtp());
+            return ResponseEntity.status(HttpStatus.OK).body(studentService.validStudentOtp(otp.getUserOtp(),otp.getUsername()));
+        }
+        catch(Exception e)
+        {
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
+        }
+
     }
     @PostMapping("/validateStudentForgotPassword")
-    public Boolean validateForgotPassword(@RequestBody OTP otp)
+    public ResponseEntity<?> validateForgotPassword(@RequestBody OTP otp)
     {
-        System.out.println(otp.getUserOtp());
-        boolean c=studentService.validStudentOtp(otp.getUserOtp(),otp.getUsername());
-        System.out.println(c);
-        return c;
+        try {
+            System.out.println(otp.getUserOtp());
+            boolean c = studentService.validStudentOtp(otp.getUserOtp(), otp.getUsername());
+            System.out.println(c);
+            return ResponseEntity.status(HttpStatus.OK).body(c);
+        }
+        catch(Exception e)
+        {
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
+        }
     }
     @PostMapping( value="/createStudentNewPassword" )
-    public String createNewPassword( @RequestBody PasswordDTO passwordDTO)
+    public ResponseEntity<?> createNewPassword(@RequestBody PasswordDTO passwordDTO)
     {
-        return studentService.createPassword(passwordDTO.getUsername(),passwordDTO.getPassword());
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(studentService.createPassword(passwordDTO.getUsername(), passwordDTO.getPassword()));
+        }
+        catch(Exception e)
+        {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
+        }
     }
     @PostMapping("/delete/allStudents")
     public String deleteAll()

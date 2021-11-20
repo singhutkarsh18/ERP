@@ -1,10 +1,10 @@
 package com.ERP.ERPAPI.Controller;
-
 import com.ERP.ERPAPI.Model.ImageModel;
 import com.ERP.ERPAPI.Repository.ImageRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,15 +23,27 @@ public class ImageController {
     @Autowired
     private ImageRepo imageRepo;
     @PostMapping(value="/image/upload", consumes = { "multipart/form-data" })
-    public ResponseEntity.BodyBuilder uplaodImage(@RequestParam("file") MultipartFile file) throws IOException {
-        System.out.println("Original Image Byte Size - " + file.getBytes().length);
-        ImageModel img = new ImageModel(file.getOriginalFilename(), file.getContentType(),compressBytes(file.getBytes()));
-        imageRepo.save(img);
-        return ResponseEntity.status(HttpStatus.OK);
+    public ResponseEntity<?> uplaodImage(@RequestParam("file") MultipartFile file) throws IOException, HttpMediaTypeNotAcceptableException {
+
+        try {
+            if (!imageRepo.existsByName(file.getOriginalFilename())) {
+                System.out.println("Original Image Byte Size - " + file.getBytes().length);
+                ImageModel img = new ImageModel(file.getOriginalFilename(), file.getContentType(), compressBytes(file.getBytes()));
+                imageRepo.save(img);
+                return ResponseEntity.status(HttpStatus.OK).body("Image Saved");
+            }
+            else {
+                return ResponseEntity.status(HttpStatus.OK).body("Image name not unique");
+            }
+        }
+        catch(Exception e)
+        {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
+        }
     }
-    @GetMapping(path = { "/image/get/{imageName}" })
-    public ImageModel getImage(@RequestParam("imageName") String imageName) throws IOException {
-        final Optional<ImageModel> retrievedImage = imageRepo.findByName(imageName);
+    @GetMapping(path = { "/image/get" })
+    public ImageModel getImage(@RequestBody Map<String,String> imageName) throws IOException {
+        final Optional<ImageModel> retrievedImage = imageRepo.findByName(imageName.get("imageName"));
         ImageModel img = new ImageModel(retrievedImage.get().getName(), retrievedImage.get().getType(),decompressBytes(retrievedImage.get().getPicByte()));
         return img;
     }
