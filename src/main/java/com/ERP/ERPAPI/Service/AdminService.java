@@ -238,17 +238,10 @@ public class AdminService {
     }
     public String changePassword(String username,String password)
     {
-        if(teacherRepository.existsTeacherByUsername(username))
-        {
             Admin admin = adminRepository.findByUsername(username);
             admin.setPassword(passwordEncoder.encode(password));
             adminRepository.save(admin);
             return "Password updated";
-        }
-        else
-        {
-            return  "User not present";
-        }
     }
     public String addAnnouncement(Announcement announcement)
     {

@@ -160,7 +160,7 @@ public class StudentDashboard {
 //            return ResponseEntity.status(HttpStatus.OK).body("Error");
 //        }
 //    }
-    @GetMapping("/get/result")
+    @GetMapping("/show/result")
     public ResponseEntity<?> getResult(){
         try{
             UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()

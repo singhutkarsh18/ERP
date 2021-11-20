@@ -83,12 +83,15 @@ public class TeacherDashboardController {
         }
     }
     @GetMapping("/show/details/teacher")
-    public ResponseEntity<?> showTeacherDetails(@RequestBody Map<String, String> Username)
+    public ResponseEntity<?> showTeacherDetails()
     {
         HttpHeaders headers = new HttpHeaders();
         try{
-            if(teacherDetailsRepo.existsByUsername(Username.get("username")))
-                return ResponseEntity.status(HttpStatus.OK).body(teacherDetailsRepo.findTeacherDetailsByDepartment(Username.get("username")));
+            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                    .getPrincipal();
+            String username=userDetails.getUsername();
+            if(teacherDetailsRepo.existsByUsername(username))
+                return ResponseEntity.status(HttpStatus.OK).body(teacherDetailsRepo.findTeacherDetailsByUsername(username));
             else
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No details found");
         }
@@ -132,6 +135,30 @@ public class TeacherDashboardController {
             return ResponseEntity.ok(teacherService.giveMarks(marks));
         }
         catch (Exception e){
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
+        }
+    }
+    @GetMapping("/check/details/teacher")
+    public ResponseEntity<?> checkDetails()
+    {
+
+        try {
+            System.out.println("Trigger");
+            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                    .getPrincipal();
+            String username = userDetails.getUsername();
+            if(teacherDetailsRepo.existsByUsername(username))
+            {
+                return ResponseEntity.status(HttpStatus.OK).body("User details present");
+            }
+            else
+            {
+                return ResponseEntity.status(HttpStatus.OK).body("User details not present");
+            }
+        }
+        catch (Exception e)
+        {
             System.out.println(e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
         }

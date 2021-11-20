@@ -5,11 +5,14 @@ import com.ERP.ERPAPI.Service.AdminService;
 import com.ERP.ERPAPI.Service.StudentService;
 import com.ERP.ERPAPI.Service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
+import java.security.spec.ECField;
 import java.util.List;
 import java.util.Map;
 
@@ -25,34 +28,63 @@ public class AdminDashboardController {
     @Autowired
     StudentService studentService;
     @PostMapping("/create/Teacher")
-    public String createTeacher(@RequestBody Teacher teacher)
+    public ResponseEntity<?> createTeacher(@RequestBody Teacher teacher)
     {
-       //Add validation
-        return this.service.create(teacher);
+       try{
+            return ResponseEntity.ok(this.service.create(teacher));
+       }
+       catch (Exception e)
+       {
+           return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
+       }
     }
     @GetMapping("/show/teachers")
-    public List<Teacher> showAllTeachers()
+    public ResponseEntity<?> showAllTeachers()
     {
-
-        return service.showAll();
+        try{
+            return ResponseEntity.ok(service.showAll());
+        }
+        catch (Exception e)
+        {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
+        }
     }
     @PostMapping("/delete/teacher")
-    public String removeTeacher(@RequestBody Username username)
+    public ResponseEntity<?> removeTeacher(@RequestBody Username username)
     {
-        return this.service.remove(username);
+        try{
+            return ResponseEntity.ok(service.remove(username));
+        }
+        catch (Exception e)
+        {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
+        }
     }
     @GetMapping("/show/Reports")
-    public List<Report> viewReport()
+    public ResponseEntity<?> viewReport()
     {
-        return adminService.showReports();
+        try{
+            return ResponseEntity.ok(adminService.showReports());
+        }
+        catch (Exception e)
+        {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
+        }
     }
     @PostMapping("/update/password/Admin")
-    public String changePassword(@RequestBody Password password)
+    public ResponseEntity<?> changePassword(@RequestBody Password password)
     {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
-                .getPrincipal();
-        String username=userDetails.getUsername();
-        return adminService.changePassword(username,password.getPassword());
+        try {
+            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                    .getPrincipal();
+            String username = userDetails.getUsername();
+            System.out.println(username);
+            return ResponseEntity.ok(adminService.changePassword(username, password.getPassword()));
+        }
+        catch (Exception e) {
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
+        }
     }
     @PostMapping("/hello1")
     public String hello()
