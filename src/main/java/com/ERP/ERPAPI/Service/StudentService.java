@@ -7,7 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.HTMLDocument;
 import javax.transaction.Transactional;
+import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -291,7 +293,20 @@ public class StudentService {
     public List<Marks> showMarks(String username)
     {
         List<Marks> marks=marksRepo.findAllByUsername(username);
-
+        Iterator itr=marks.iterator();
+        float total=0;
+        int number=0;
+        while(itr.hasNext())
+        {
+            Marks m=(Marks)itr.next();
+            total+=m.getMarks();
+            number++;
+        }
+        float percent=total/number;
+        Marks marks1=new Marks(username,"Total marks ",total);
+        Marks marks2=new Marks(username,"Percentage",percent);
+        marks.add(marks1);
+        marks.add(marks2);
         return marks;
     }
 

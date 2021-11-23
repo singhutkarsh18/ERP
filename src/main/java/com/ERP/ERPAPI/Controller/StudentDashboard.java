@@ -71,13 +71,17 @@ public class StudentDashboard {
     public ResponseEntity<?> personalDetails(@RequestBody StudentDetails studentDetails)
     {
         try {
-            //Student number cannot be left empty!!
-//            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
-//                    .getPrincipal();
-//            String username = userDetails.getUsername();
+//            Student number cannot be left empty!!
+            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                    .getPrincipal();
+            String username = userDetails.getUsername();
 
-            studentService.addStudentNo(studentDetails.getUsername(), studentDetails.getStudentNo());
-            return ResponseEntity.ok(studentDetailService.addDetails(studentDetails));
+            if(username.equals(studentDetails.getUsername())) {
+                studentService.addStudentNo(studentDetails.getUsername(), studentDetails.getStudentNo());
+                return ResponseEntity.ok(studentDetailService.addDetails(studentDetails));
+            }
+            else
+                return ResponseEntity.ok("Username not correct");
         }
         catch (Exception e)
         {
