@@ -19,6 +19,7 @@ import java.util.Map;
 @RestController
 @Transactional
 @CrossOrigin("*")
+
 public class AdminDashboardController {
 
     @Autowired
