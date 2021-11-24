@@ -82,17 +82,4 @@ public class ImageController {
             return ResponseEntity.ok(e);
         }
     }
-//    public ResponseEntity<?> showImage()
-//    {
-//        try{
-//        UserDetails userDetails=(UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        String username=userDetails.getUsername();
-//        if(!imageRepo.existsByUsername(username))
-//            return new ResponseEntity<>("Image not found", HttpStatus.OK);
-//        else
-//            return new ResponseEntity<>(imageRepo.findImageModelByUsername(username).getImageName(), HttpStatus.OK);
-//        } catch (Exception e) {
-//            return new ResponseEntity<>("Image error", HttpStatus.BAD_REQUEST);
-//        }
-//    }
 }
