@@ -29,6 +29,7 @@ public class TeacherDetails {
     private String ugYear;
     private String pgYear;
     private String phdYear;
+    private String profilepic;
 
     public TeacherDetails(Integer teacherId,String name, String department, String dob, String username, String category, String city, String district, String ug, String pg, String phd, String specialization, String mob, String gender, String address, String state, Integer pincode, String ugYear, String pgYear, String phdYear) {
         this.teacherId = teacherId;

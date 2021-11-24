@@ -1,57 +1,50 @@
 package com.ERP.ERPAPI.Model;
 
-import javax.persistence.*;
+import lombok.*;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
 
 @Entity
 public class ImageModel {
 
-    public ImageModel() {
-        super();
-    }
-
-    public ImageModel(String name, String type, byte[] picByte) {
-        this.name = name;
-        this.type = type;
-        this.picByte = picByte;
-
-    }
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String name;
-    private String type;
-    @Lob
-    private byte[] picByte;
+    @GeneratedValue
+    private Integer id;
+    private String imageName;
+    private String username;
 
-    public Long getId() {
+    public ImageModel() {
+    }
+
+    public ImageModel(String imageName, String username) {
+        this.imageName = imageName;
+        this.username = username;
+    }
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getImageName() {
+        return imageName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
     }
 
-    public String getType() {
-        return type;
+    public String getUsername() {
+        return username;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public byte[] getPicByte() {
-        return picByte;
-    }
-
-    public void setPicByte(byte[] picByte) {
-        this.picByte = picByte;
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

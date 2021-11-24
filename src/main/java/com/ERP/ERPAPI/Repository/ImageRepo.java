@@ -1,12 +1,11 @@
 package com.ERP.ERPAPI.Repository;
 
+
 import com.ERP.ERPAPI.Model.ImageModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
+public interface ImageRepo extends JpaRepository<ImageModel,Integer> {
+    boolean existsByUsername(String username);
+    ImageModel findImageModelByUsername(String username);
 
-public interface ImageRepo extends JpaRepository<ImageModel,Long> {
-
-    Optional<ImageModel> findByName(String name);
-    Boolean existsByName(String name);
 }

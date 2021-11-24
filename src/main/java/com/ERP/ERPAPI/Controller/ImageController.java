@@ -1,20 +1,21 @@
 package com.ERP.ERPAPI.Controller;
 import com.ERP.ERPAPI.Model.ImageModel;
 import com.ERP.ERPAPI.Repository.ImageRepo;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.HttpMediaTypeNotAcceptableException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
-import java.util.Map;
-import java.util.Optional;
-import java.util.zip.DataFormatException;
-import java.util.zip.Deflater;
-import java.util.zip.Inflater;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -22,65 +23,76 @@ public class ImageController {
 
     @Autowired
     private ImageRepo imageRepo;
-    @PostMapping(value="/image/upload", consumes = { "multipart/form-data" })
-    public ResponseEntity<?> uplaodImage(@RequestParam("file") MultipartFile file) throws IOException, HttpMediaTypeNotAcceptableException {
+    private String imageDirectory ="./src/main/resources/images";
 
+    @PostMapping("/image/upload")
+    public ResponseEntity<?> uploadImage(@RequestParam("imageFile")MultipartFile file,
+                                         @RequestParam("imageName") String name) {
         try {
-            if (!imageRepo.existsByName(file.getOriginalFilename())) {
-                System.out.println("Original Image Byte Size - " + file.getBytes().length);
-                ImageModel img = new ImageModel(file.getOriginalFilename(), file.getContentType(), compressBytes(file.getBytes()));
-                imageRepo.save(img);
-                return ResponseEntity.status(HttpStatus.OK).body("Image Saved");
+            makeDirectoryIfNotExist(imageDirectory);
+            String[] fileFrags = file.getOriginalFilename().split("\\.");
+            String extension = fileFrags[fileFrags.length-1];
+            Path fileNamePath = Paths.get(imageDirectory,
+                name.concat(".").concat(extension));
+            System.out.println(System.getProperty("user.dir"));
+            System.out.println(fileNamePath);
+            System.out.println(fileNamePath.getClass().getName());
+            Files.write(fileNamePath, file.getBytes());
+            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                    .getPrincipal();
+            String username=userDetails.getUsername();
+            if(imageRepo.existsByUsername(username))
+            {
+                ImageModel imageModel =imageRepo.findImageModelByUsername(username);
+                imageModel.setImageName(fileNamePath.toString());
+                imageRepo.save(imageModel);
             }
             else {
-                return ResponseEntity.status(HttpStatus.OK).body("Image name not unique");
+                ImageModel imageModel = new ImageModel();
+                imageModel.setUsername(username);
+                imageModel.setImageName(fileNamePath.toString());
+                imageRepo.save(imageModel);
             }
-        }
-        catch(Exception e)
-        {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
+            return new ResponseEntity<>("Image uploaded", HttpStatus.CREATED);
+        } catch (IOException ex) {
+            return new ResponseEntity<>("Image is not uploaded", HttpStatus.BAD_REQUEST);
         }
     }
-    @GetMapping(path = { "/image/get" })
-    public ImageModel getImage(@RequestBody Map<String,String> imageName) throws IOException {
-        final Optional<ImageModel> retrievedImage = imageRepo.findByName(imageName.get("imageName"));
-        ImageModel img = new ImageModel(retrievedImage.get().getName(), retrievedImage.get().getType(),decompressBytes(retrievedImage.get().getPicByte()));
-        return img;
-    }
-    public static byte[] compressBytes(byte[] data) {
-        Deflater deflater = new Deflater();
-        deflater.setInput(data);
-        deflater.finish();
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
-        byte[] buffer = new byte[1024];
-        while (!deflater.finished()) {
 
-            int count = deflater.deflate(buffer);
-            outputStream.write(buffer, 0, count);
+    private void makeDirectoryIfNotExist(String imageDirectory) {
+        File directory = new File(imageDirectory);
+        if (!directory.exists()) {
+            directory.mkdir();
         }
+    }
+    @GetMapping("/image/get")
+    public ResponseEntity<?> getImage() {
+        byte[] image = new byte[0];
         try {
-            outputStream.close();
+            UserDetails userDetails=(UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            String username=userDetails.getUsername();
+            if(!imageRepo.existsByUsername(username))
+            return new ResponseEntity<>("Image not found", HttpStatus.OK);
+        else {
+                image = FileUtils.readFileToByteArray(new File(imageRepo.findImageModelByUsername(username).getImageName()));
+                return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(image);
+            }
         } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.ok(e);
         }
-        System.out.println("Compressed Image Byte Size - " + outputStream.toByteArray().length);
-        return outputStream.toByteArray();
     }
-    public static byte[] decompressBytes(byte[] data) {
-        Inflater inflater = new Inflater();
-        inflater.setInput(data);
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
-        byte[] buffer = new byte[1024];
-        try {
-            while (!inflater.finished()) {
-                int count = inflater.inflate(buffer);
-                outputStream.write(buffer, 0, count);
-            }
-            outputStream.close();
-        } catch (IOException ioe) {
-        } catch (DataFormatException e) {
-        }
-        return outputStream.toByteArray();
-
-    }
-
+//    public ResponseEntity<?> showImage()
+//    {
+//        try{
+//        UserDetails userDetails=(UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        String username=userDetails.getUsername();
+//        if(!imageRepo.existsByUsername(username))
+//            return new ResponseEntity<>("Image not found", HttpStatus.OK);
+//        else
+//            return new ResponseEntity<>(imageRepo.findImageModelByUsername(username).getImageName(), HttpStatus.OK);
+//        } catch (Exception e) {
+//            return new ResponseEntity<>("Image error", HttpStatus.BAD_REQUEST);
+//        }
+//    }
 }

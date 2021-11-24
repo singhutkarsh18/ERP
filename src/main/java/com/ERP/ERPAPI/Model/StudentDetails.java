@@ -33,6 +33,7 @@ public class StudentDetails {
     private String tenthBoard;
     private String twelfthBoard;
     private String passingYear12;
+    private String profilepic;
 
     public StudentDetails(Integer studentNo, String name, Long uniRollNo, String course, String branch, String dob, String sem, String username, Long mobNo, String gender, String category, String father, String mother, Long fatherNo, Long motherNo, String address, String city, Integer pincode, String state, String cls, String tenth, String passingYear10, String twelfth, String tenthBoard, String twelfthBoard, String passingYear12) {
         this.studentNo = studentNo;
@@ -274,5 +275,6 @@ public class StudentDetails {
     public void setPassingYear12(String passingYear12) {
         this.passingYear12 = passingYear12;
     }
+
 
 }
