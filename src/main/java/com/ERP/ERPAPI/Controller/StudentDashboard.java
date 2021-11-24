@@ -18,6 +18,7 @@ import java.util.Map;
 
 @RestController
 @CrossOrigin("*")
+@RequestMapping("/api")
 public class StudentDashboard {
 
     @Autowired

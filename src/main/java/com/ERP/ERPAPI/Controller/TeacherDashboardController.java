@@ -12,10 +12,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-
 @RestController
 @CrossOrigin("*")
+@RequestMapping("/api")
 public class TeacherDashboardController {
 
     @Autowired

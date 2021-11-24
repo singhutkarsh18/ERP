@@ -18,6 +18,7 @@ import java.util.zip.Inflater;
 
 @RestController
 @CrossOrigin(origins = "*")
+@RequestMapping("/api")
 public class ImageController {
 
     @Autowired

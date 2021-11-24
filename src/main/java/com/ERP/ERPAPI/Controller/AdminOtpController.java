@@ -13,6 +13,7 @@ import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "*")
+@RequestMapping("/api")
 public class AdminOtpController {
 
 

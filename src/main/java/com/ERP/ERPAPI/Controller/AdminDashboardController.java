@@ -1,6 +1,9 @@
 package com.ERP.ERPAPI.Controller;
 
-import com.ERP.ERPAPI.Model.*;
+import com.ERP.ERPAPI.Model.Announcement;
+import com.ERP.ERPAPI.Model.Password;
+import com.ERP.ERPAPI.Model.Teacher;
+import com.ERP.ERPAPI.Model.Username;
 import com.ERP.ERPAPI.Service.AdminService;
 import com.ERP.ERPAPI.Service.StudentService;
 import com.ERP.ERPAPI.Service.TeacherService;
@@ -12,14 +15,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
-import java.security.spec.ECField;
 import java.util.List;
 import java.util.Map;
 
 @RestController
 @Transactional
 @CrossOrigin("*")
-
+@RequestMapping("/api")
 public class AdminDashboardController {
 
     @Autowired
