@@ -21,7 +21,6 @@ import java.util.Map;
 @RestController
 @Transactional
 @CrossOrigin("*")
-@RequestMapping("/api")
 public class AdminDashboardController {
 
     @Autowired
@@ -114,5 +113,9 @@ public class AdminDashboardController {
 //    {
 //
 //    }
-
+    @GetMapping("/")
+    public String first()
+    {
+        return "Hello world";
+    }
 }
