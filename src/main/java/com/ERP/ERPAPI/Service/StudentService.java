@@ -35,6 +35,10 @@ public class StudentService {
     FeedbackRepo feedbackRepo;
     @Autowired
     private MarksRepo marksRepo;
+    @Autowired
+    private TeacherTempRepo teacherTempRepo;
+    @Autowired
+    private AdminTempRepository adminTempRepository;
 
     public String create(StudentTemp student){
         StudentTemp student1 =new StudentTemp();
@@ -180,6 +184,8 @@ public class StudentService {
         String regexEmail="^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}";
         if(isValid(email,regexEmail)&&studentRepository.existsStudentByUsername(email)&&!repo.existsStudentByUsername(email)) {
             int otp = otpService.generateOTP(email);
+            int id=student1.getId();
+            student.setId(id);
             student.setValid(false);
             student.setOTP(otp);
             repo.save(student);
@@ -293,6 +299,71 @@ public class StudentService {
         List<Marks> marks=marksRepo.findAllByUsername(username);
 
         return marks;
+    }
+    public String resendOtp(String username)
+    {
+        if(repo.existsStudentByUsername(username))
+        {
+            StudentTemp student =repo.findByUsername(username);
+            int id=student.getId();
+            student.setId(id);
+            int otp = otpService.generateOTP(username);
+            student.setValid(false);
+            student.setOTP(otp);
+            repo.save(student);
+            String message = "OTP for ERP is " + otp;
+            mail.setRecipient(username);
+            mail.setMessage(message);
+            mail.setSubject("OTP");
+            System.out.println(mail.getRecipient());
+            System.out.println(mail.getMessage());
+            otpService.sendMail(mail);
+            repo.deleteByUsername(username);
+            return "OTP resent";
+
+        }
+        else if (adminTempRepository.existsAdminByUsername(username))
+        {
+            AdminTemp adminTemp=adminTempRepository.findByUsername(username);
+            int id=adminTemp.getId();
+            adminTemp.setId(id);
+            int otp = otpService.generateOTP(username);
+            adminTemp.setValid(false);
+            adminTemp.setOTP(otp);
+            adminTempRepository.save(adminTemp);
+            String message = "OTP for ERP is " + otp;
+            mail.setRecipient(username);
+            mail.setMessage(message);
+            mail.setSubject("OTP");
+            System.out.println(mail.getRecipient());
+            System.out.println(mail.getMessage());
+            otpService.sendMail(mail);
+            adminTempRepository.deleteByUsername(username);
+            return "OTP resent";
+        }
+        else if (teacherTempRepo.existsTeacherTempByUsername(username))
+        {
+            TeacherTemp teacherTemp= teacherTempRepo.findByUsername(username);
+            int id=teacherTemp.getId();
+            teacherTemp.setId(id);
+            int otp = otpService.generateOTP(username);
+            teacherTemp.setValid(false);
+            teacherTemp.setOTP(otp);
+            teacherTempRepo.save(teacherTemp);
+            String message = "OTP for ERP is " + otp;
+            mail.setRecipient(username);
+            mail.setMessage(message);
+            mail.setSubject("OTP");
+            System.out.println(mail.getRecipient());
+            System.out.println(mail.getMessage());
+            otpService.sendMail(mail);
+            teacherTempRepo.deleteByUsername(username);
+            return "OTP resent";
+        }
+        else
+        {
+            return "OTP not sent";
+        }
     }
 
 }

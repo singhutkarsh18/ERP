@@ -181,6 +181,7 @@ public class AdminService {
         String regexEmail="^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}";
         if(isValid(email,regexEmail)&&adminRepository.existsAdminByUsername(email)) {
             int otp = otpService.generateOTP(email);
+
             admin.setValid(false);
             admin.setOTP(otp);
             repo.save(admin);

@@ -1,5 +1,6 @@
 package com.ERP.ERPAPI.Controller;
 import com.ERP.ERPAPI.Model.ImageModel;
+import com.ERP.ERPAPI.Model.Username;
 import com.ERP.ERPAPI.Repository.ImageRepo;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,20 +24,19 @@ public class ImageController {
 
     @Autowired
     private ImageRepo imageRepo;
-    private String imageDirectory ="./src/main/resources/images";
+
 
     @PostMapping("/image/upload")
     public ResponseEntity<?> uploadImage(@RequestParam("imageFile")MultipartFile file,
                                          @RequestParam("imageName") String name) {
         try {
+            String imageDirectory ="./src/main/resources/images";
             makeDirectoryIfNotExist(imageDirectory);
             String[] fileFrags = file.getOriginalFilename().split("\\.");
             String extension = fileFrags[fileFrags.length-1];
             Path fileNamePath = Paths.get(imageDirectory,
                 name.concat(".").concat(extension));
-            System.out.println(System.getProperty("user.dir"));
             System.out.println(fileNamePath);
-            System.out.println(fileNamePath.getClass().getName());
             Files.write(fileNamePath, file.getBytes());
             UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
                     .getPrincipal();
@@ -75,6 +75,21 @@ public class ImageController {
             return new ResponseEntity<>("Image not found", HttpStatus.OK);
         else {
                 image = FileUtils.readFileToByteArray(new File(imageRepo.findImageModelByUsername(username).getImageName()));
+                return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(image);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.ok(e);
+        }
+    }
+    @PostMapping("/image/get/username")
+    public ResponseEntity<?> getImageByUsername(@RequestBody Username username) {
+        byte[] image = new byte[0];
+        try {
+            if(!imageRepo.existsByUsername(username.getUsername()))
+                return new ResponseEntity<>("Image not found", HttpStatus.OK);
+            else {
+                image = FileUtils.readFileToByteArray(new File(imageRepo.findImageModelByUsername(username.getUsername()).getImageName()));
                 return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(image);
             }
         } catch (IOException e) {

@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface TeacherTempRepo extends JpaRepository<TeacherTemp,Integer> {
     TeacherTemp findByUsername(String username);
     boolean existsTeacherTempByUsername(String username);
+    void deleteByUsername(String username);
 }

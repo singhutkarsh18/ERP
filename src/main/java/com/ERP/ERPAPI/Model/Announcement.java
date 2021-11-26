@@ -1,5 +1,6 @@
 package com.ERP.ERPAPI.Model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -13,6 +14,7 @@ public class Announcement {
     private Integer id;
     private String date;
     private String subject;
+    @Column(name = "announcement",length =450)
     private String announcement;
 
     public Announcement(String announcement,String date,String subject) {

@@ -3,6 +3,7 @@ package com.ERP.ERPAPI.Controller;
 import com.ERP.ERPAPI.Model.OTP;
 import com.ERP.ERPAPI.Model.PasswordDTO;
 import com.ERP.ERPAPI.Model.StudentTemp;
+import com.ERP.ERPAPI.Model.Username;
 import com.ERP.ERPAPI.Repository.StudentRepository;
 import com.ERP.ERPAPI.Service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,5 +102,16 @@ public class StudentOtpController {
     public String hello()
     {
         return "Hello";
+    }
+    @PostMapping("/resend/otp")
+    public ResponseEntity<?> resendOTP(@RequestBody Username username)
+    {
+        try{
+            return ResponseEntity.status(HttpStatus.OK).body(studentService.resendOtp(username.getUsername()));
+        }
+        catch(Exception e)
+        {
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("Error");
+        }
     }
 }
