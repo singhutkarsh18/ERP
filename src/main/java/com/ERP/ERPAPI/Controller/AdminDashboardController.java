@@ -106,10 +106,5 @@ public class AdminDashboardController {
     {
         return service.foundByDepartment(Department.get("department"));
     }
-//    @PostMapping("/update/teacher")
-//    public ResponseEntity<?> updateTeacher(@RequestBody Map<String,String> Username)
-//    {
-//
-//    }
 
 }
