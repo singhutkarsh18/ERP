@@ -4,6 +4,7 @@ import com.ERP.ERPAPI.Model.*;
 import com.ERP.ERPAPI.Repository.AttendanceRepo;
 import com.ERP.ERPAPI.Repository.TeacherDetailsRepo;
 import com.ERP.ERPAPI.Service.TeacherService;
+import org.hibernate.event.service.internal.EventListenerServiceInitiator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -11,8 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @CrossOrigin("*")
@@ -31,6 +30,16 @@ public class TeacherDashboardController {
     {
         HttpHeaders headers=new HttpHeaders();
         try{
+//            if(attendanceRepo.existsByDate(attendance.getDate()))
+//            {
+//                Attendance attendance1=attendanceRepo.findAttendanceByDate(attendance.getDate());
+//
+//
+//            }
+//            else
+//            {
+//                attendanceRepo.save(attendance);
+//            }
             attendanceRepo.save(attendance);
             return ResponseEntity.status(HttpStatus.CREATED).body("Success");
         }
@@ -120,14 +129,7 @@ public class TeacherDashboardController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
         }
     }
-//    @PostMapping("/show/feedback")
-//    public ResponseEntity<?> showTeacherFeedback()
-//    {
-//        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
-//                .getPrincipal();
-//        String username=userDetails.getUsername();
-//        return teacherService.showFeedback(username);
-//    }
+
     @PostMapping("/add/marks")
     public ResponseEntity<?> addMarks(@RequestBody Marks marks)
     {

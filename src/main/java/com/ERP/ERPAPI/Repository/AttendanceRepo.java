@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface AttendanceRepo extends JpaRepository<Attendance,Integer> {
     List<Attendance> findAttendanceByUsername(String username);
-
+    boolean existsByDate(String date);
+    Attendance findAttendanceByDate(String username);
 }

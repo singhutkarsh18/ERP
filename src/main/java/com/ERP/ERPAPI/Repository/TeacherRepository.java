@@ -14,4 +14,6 @@ public interface TeacherRepository extends JpaRepository<Teacher,Integer>
     void deleteByUsername(String username);
     List<Teacher> findTeacherByDepartment(String department);
     Boolean existsTeacherByDepartment(String department);
+    void deleteById(Integer id);
+    boolean existsById(Integer id);
 }

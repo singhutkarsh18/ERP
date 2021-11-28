@@ -12,10 +12,9 @@ public class Attendance
     private Integer id;
     private String username;
     private String date;
-    private Boolean present;
+    private String present;
 
-    public Attendance(Integer id, String username, String date, Boolean present) {
-        this.id= id;
+    public Attendance(String username, String date, String present) {
         this.username = username;
         this.date = date;
         this.present = present;
@@ -48,11 +47,11 @@ public class Attendance
         this.date = date;
     }
 
-    public Boolean getPresent() {
+    public String getPresent() {
         return present;
     }
 
-    public void setPresent(Boolean present) {
+    public void setPresent(String present) {
         this.present = present;
     }
 }

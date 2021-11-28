@@ -249,11 +249,11 @@ public class AdminService {
         announcementRepository.save(announcement);
         return "Announcement added";
     }
-    public String removeAnnounecemnt(String date)
+    public String removeAnnounecemnt(Integer id)
     {
-        if(announcementRepository.existsByDate(date))
+        if(announcementRepository.existsById(id))
         {
-            announcementRepository.deleteByDate(date);
+            announcementRepository.deleteById(id);
             return "deleted";
         }
         else

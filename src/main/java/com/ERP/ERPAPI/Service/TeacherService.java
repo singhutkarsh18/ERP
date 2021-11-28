@@ -61,10 +61,10 @@ public class TeacherService {
         teachers =repo.findAll();
         return teachers;
     }
-    public String remove(Username username)
+    public String remove(Integer id)
     {
-        if (repo.existsTeacherByUsername(username.getUsername())) {
-            repo.deleteByUsername(username.getUsername());
+        if (repo.existsById(id)) {
+            repo.deleteById(id);
             return "Teacher removed from database";
         }
         else

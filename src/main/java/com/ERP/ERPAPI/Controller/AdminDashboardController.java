@@ -50,10 +50,10 @@ public class AdminDashboardController {
         }
     }
     @PostMapping("/delete/teacher")
-    public ResponseEntity<?> removeTeacher(@RequestBody Username username)
+    public ResponseEntity<?> removeTeacher(@RequestBody Map<String ,Integer> id)
     {
         try{
-            return ResponseEntity.ok(service.remove(username));
+            return ResponseEntity.ok(service.remove(id.get("id")));
         }
         catch (Exception e)
         {
@@ -97,9 +97,9 @@ public class AdminDashboardController {
         return adminService.addAnnouncement(announcement);
     }
     @PostMapping("/delete/announcement")
-    public String deleteAnnouncement(@RequestBody Map<String,String> Date)
+    public String deleteAnnouncement(@RequestBody Map<String,Integer> Id)
     {
-        return adminService.removeAnnounecemnt(Date.get("date"));
+        return adminService.removeAnnounecemnt(Id.get("id"));
     }
     @PostMapping("/show/teacher/byDepartment")
     public List<Teacher> showTeacherByDepartment(@RequestBody Map<String,String> Department)

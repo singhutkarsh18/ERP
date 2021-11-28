@@ -1,13 +1,9 @@
 package com.ERP.ERPAPI.Controller;
 
-import com.ERP.ERPAPI.Model.Attendance;
-import com.ERP.ERPAPI.Model.Marks;
-import com.ERP.ERPAPI.Model.Report;
-import com.ERP.ERPAPI.Model.StudentDetails;
+import com.ERP.ERPAPI.Model.*;
 import com.ERP.ERPAPI.Repository.StudentDetailRepository;
 import com.ERP.ERPAPI.Service.StudentDetailService;
 import com.ERP.ERPAPI.Service.StudentService;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +11,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin("*")
@@ -72,11 +71,6 @@ public class StudentDashboard {
     public ResponseEntity<?> personalDetails(@RequestBody StudentDetails studentDetails)
     {
         try {
-            //Student number cannot be left empty!!
-//            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
-//                    .getPrincipal();
-//            String username = userDetails.getUsername();
-
             studentService.addStudentNo(studentDetails.getUsername(), studentDetails.getStudentNo());
             return ResponseEntity.ok(studentDetailService.addDetails(studentDetails));
         }
@@ -85,22 +79,6 @@ public class StudentDashboard {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to add details");
         }
     }
-//    @PostMapping("/details/academic/student")
-//    public ResponseEntity<?> academicDetails(@RequestBody StudentAcademics studentAcademics)
-//    {
-//        try {
-//            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
-//                    .getPrincipal();
-//            String username = userDetails.getUsername();
-//            studentService.addStudentNo(username, studentAcademics.getStudentNo());
-//            return ResponseEntity.ok(studentDetailService.addAcademics(studentAcademics));
-//        }
-//        catch(Exception e)
-//        {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to add details");
-//        }
-//
-//    }
     @GetMapping("/show/studentDetails/personal")
     public ResponseEntity<?> showStudentDetails()
     {
@@ -115,21 +93,19 @@ public class StudentDashboard {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not authorized");
         }
     }
-//    @GetMapping("/show/studentDetails/academic")
-//    public ResponseEntity<?> showAcademicDetails()
-//    {
-//        try {
-//            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
-//                    .getPrincipal();
-//            String username = userDetails.getUsername();
-//
-//            return ResponseEntity.status(HttpStatus.OK).body(studentDetailService.showAcademics(username));
-//        }
-//        catch(Exception e)
-//        {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Not authorized");
-//        }
-//    }
+    @PostMapping("/show/studentDetails/username")
+    public ResponseEntity<?> showStudentDetails(@RequestParam(required = false) String username)
+    {
+        try {
+            System.out.println("username "+username);
+            System.out.println(studentDetailService.showDetails(username));
+            return ResponseEntity.status(HttpStatus.OK).body(studentDetailService.showDetails(username));
+        }
+        catch (Exception e)
+        {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error");
+        }
+    }
     @GetMapping("/show/attendance")
     public ResponseEntity<?> showAttendance()
     {
@@ -137,46 +113,25 @@ public class StudentDashboard {
             UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
                     .getPrincipal();
             String username = userDetails.getUsername();
-            return ResponseEntity.status(HttpStatus.OK).body(studentService.getAttendance(username));
-        }
-        catch(Exception e)
-        {
-            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
-                    .getPrincipal();
-            String username = userDetails.getUsername();
             List<Attendance> attendances =studentService.getAttendance(username);
-            if (attendances==null)
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No Attendance found");
-            else
-                return ResponseEntity.status(HttpStatus.OK).body("Error");
-        }
-    }
-    @GetMapping("/show/attendance/total")
-    public ResponseEntity<?> showAttendanceTotal()
-    {
-        try{
-            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
-                    .getPrincipal();
-            String username = userDetails.getUsername();
-            List<Attendance> attendances =studentService.getAttendance(username);
-            Integer present=0;
-            Integer total=0;
-            Iterator itr= attendances.iterator();
-            while(itr.hasNext())
-            {
-                Attendance attendance=(Attendance) itr.next();
-                if(attendance.getPresent())
-                    present++;
-                total++;
+            Integer present = 0;
+            Integer total = 0;
+            Float presentPercent=0.0f;
+            Iterator itr = attendances.iterator();
+            if(!attendances.isEmpty()) {
+                while (itr.hasNext()) {
+                    Attendance attendance = (Attendance) itr.next();
+                    if (attendance.getPresent().equals("Present"))
+                        present++;
+                    total++;
+                }
             }
-            Float presentPercent=(float)(present*100)/total;
-            Integer presentPercent1=Math.round(presentPercent);
-            Map<String,String> AttendanceTotal =new HashMap<>();
-            AttendanceTotal.put("Present",present.toString());
-            AttendanceTotal.put("Percent",presentPercent1.toString()+"%");
-            AttendanceTotal.put("Total",total.toString());
-
-            return ResponseEntity.status(HttpStatus.OK).body(AttendanceTotal);
+                presentPercent = (float) (present * 100) / total;
+                Integer presentPercent1 = Math.round(presentPercent);
+                attendances.add(new Attendance(username,"No. of days present: ",present.toString()));
+                attendances.add(new Attendance(username,"Total no of Classes: ",total.toString()));
+                attendances.add(new Attendance(username,"Percentage of attendance: ",(presentPercent.toString())+"%"));
+             return ResponseEntity.ok(attendances);
 
         }
         catch(Exception e)
@@ -191,14 +146,45 @@ public class StudentDashboard {
                 return ResponseEntity.status(HttpStatus.OK).body("Error");
         }
     }
-//    @PostMapping("/add/feedback")
-//    public ResponseEntity<?> addFeedback(@RequestBody Feedback feedback){
+//    @GetMapping("/show/attendance/total")
+//    public ResponseEntity<?> showAttendanceTotal()
+//    {
 //        try{
-//            return ResponseEntity.ok(studentService.addFeedback(feedback));
+//            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+//                    .getPrincipal();
+//            String username = userDetails.getUsername();
+//            List<Attendance> attendances =studentService.getAttendance(username);
+//                Integer present = 0;
+//                Integer total = 0;
+//                Iterator itr = attendances.iterator();
+//            if(!attendances.isEmpty()) {
+//                while (itr.hasNext()) {
+//                    Attendance attendance = (Attendance) itr.next();
+//                    if (attendance.getPresent())
+//                        present++;
+//                    total++;
+//                }
+//            }
+//                Float presentPercent = (float) (present * 100) / total;
+//                Integer presentPercent1 = Math.round(presentPercent);
+//                Map<String, String> AttendanceTotal = new HashMap<>();
+//                AttendanceTotal.put("Present", present.toString());
+//                AttendanceTotal.put("Percent", presentPercent1.toString() + "%");
+//                AttendanceTotal.put("Total", total.toString());
+//
+//                return ResponseEntity.status(HttpStatus.OK).body(AttendanceTotal);
+//
 //        }
 //        catch(Exception e)
 //        {
-//            return ResponseEntity.status(HttpStatus.OK).body("Error");
+//            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+//                    .getPrincipal();
+//            String username = userDetails.getUsername();
+//            List<Attendance> attendances =studentService.getAttendance(username);
+//            if (attendances==null)
+//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No Attendance found");
+//            else
+//                return ResponseEntity.status(HttpStatus.OK).body("Error");
 //        }
 //    }
     @GetMapping("/show/result")
@@ -280,4 +266,5 @@ public class StudentDashboard {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
         }
     }
+
 }

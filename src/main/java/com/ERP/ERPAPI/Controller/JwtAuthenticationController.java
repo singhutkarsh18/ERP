@@ -7,6 +7,7 @@ import com.ERP.ERPAPI.Model.JwtResponse;
 import com.ERP.ERPAPI.Model.Student;
 import com.ERP.ERPAPI.Model.StudentJwtRequest;
 import com.ERP.ERPAPI.Repository.StudentRepository;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -67,6 +68,11 @@ public class JwtAuthenticationController {
                 System.out.println(passwordEncoder.matches(password, student.getPassword()));
                 return "false";
             }
+        }
+        catch(ExpiredJwtException e1)
+        {
+            System.out.println(e1);
+            return "JWT token has expired";
         }
         catch (Exception e)
         {
