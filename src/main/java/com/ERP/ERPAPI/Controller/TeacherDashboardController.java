@@ -4,6 +4,7 @@ import com.ERP.ERPAPI.Model.*;
 import com.ERP.ERPAPI.Repository.AttendanceRepo;
 import com.ERP.ERPAPI.Repository.TeacherDetailsRepo;
 import com.ERP.ERPAPI.Service.TeacherService;
+import lombok.AllArgsConstructor;
 import org.hibernate.event.service.internal.EventListenerServiceInitiator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -14,7 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin("*")
+@CrossOrigin("*")@AllArgsConstructor
 public class TeacherDashboardController {
 
     @Autowired

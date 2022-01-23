@@ -8,6 +8,7 @@ import com.ERP.ERPAPI.Model.Student;
 import com.ERP.ERPAPI.Model.StudentJwtRequest;
 import com.ERP.ERPAPI.Repository.StudentRepository;
 import io.jsonwebtoken.ExpiredJwtException;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*")@AllArgsConstructor
 public class JwtAuthenticationController {
 
     @Autowired

@@ -5,6 +5,7 @@ import com.ERP.ERPAPI.Model.OTP;
 import com.ERP.ERPAPI.Model.PasswordDTO;
 import com.ERP.ERPAPI.Repository.AdminRepository;
 import com.ERP.ERPAPI.Service.AdminService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +15,7 @@ import javax.mail.MessagingException;
 import java.util.Map;
 
 @RestController
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*")@AllArgsConstructor
 public class AdminOtpController {
 
 
@@ -26,13 +27,13 @@ public class AdminOtpController {
     @PostMapping("/create/Admin")
     public ResponseEntity<?> createAdmin(@RequestBody AdminTemp admin)
     {
-        try {
+//        try {
             return ResponseEntity.ok(adminService.create(admin));
-        }
-        catch(Exception e)
-        {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error");
-        }
+//        }
+//        catch(Exception e)
+//        {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error");
+//        }
     }
     @PostMapping("/forgot/AdminPassword")
     public ResponseEntity<?> forgotPassword(@RequestBody Map<String,String> username)

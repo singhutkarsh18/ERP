@@ -4,6 +4,7 @@ import com.ERP.ERPAPI.Model.*;
 import com.ERP.ERPAPI.Service.AdminService;
 import com.ERP.ERPAPI.Service.StudentService;
 import com.ERP.ERPAPI.Service.TeacherService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ import java.util.Map;
 
 @RestController
 @Transactional
-@CrossOrigin("*")
+@CrossOrigin("*")@AllArgsConstructor
 public class AdminDashboardController {
 
     @Autowired

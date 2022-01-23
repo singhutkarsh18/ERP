@@ -4,6 +4,7 @@ import com.ERP.ERPAPI.Repository.AdminRepository;
 import com.ERP.ERPAPI.Repository.StudentRepository;
 import com.ERP.ERPAPI.Repository.TeacherRepository;
 import io.jsonwebtoken.ExpiredJwtException;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@Component
+@Component@AllArgsConstructor
 public class StudentJwtRequestFilter extends OncePerRequestFilter {
 
     @Autowired

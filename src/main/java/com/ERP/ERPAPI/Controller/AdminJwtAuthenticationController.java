@@ -6,6 +6,7 @@ import com.ERP.ERPAPI.Model.Admin;
 import com.ERP.ERPAPI.Model.AdminJwtRequest;
 import com.ERP.ERPAPI.Model.JwtResponse;
 import com.ERP.ERPAPI.Repository.AdminRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@CrossOrigin(origins="*")
+@CrossOrigin(origins="*")@AllArgsConstructor
 public class AdminJwtAuthenticationController {
 
     @Autowired

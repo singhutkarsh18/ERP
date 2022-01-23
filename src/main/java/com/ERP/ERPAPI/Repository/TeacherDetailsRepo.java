@@ -2,7 +2,6 @@ package com.ERP.ERPAPI.Repository;
 
 import com.ERP.ERPAPI.Model.TeacherDetails;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.relational.core.sql.In;
 
 import java.util.List;
 

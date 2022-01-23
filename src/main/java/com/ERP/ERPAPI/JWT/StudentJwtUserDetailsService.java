@@ -2,6 +2,7 @@ package com.ERP.ERPAPI.JWT;
 
 import com.ERP.ERPAPI.Model.Student;
 import com.ERP.ERPAPI.Repository.StudentRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 
-@Service
+@Service@AllArgsConstructor
 public class StudentJwtUserDetailsService implements UserDetailsService {
 
     @Autowired

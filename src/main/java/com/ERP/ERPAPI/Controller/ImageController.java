@@ -2,6 +2,7 @@ package com.ERP.ERPAPI.Controller;
 import com.ERP.ERPAPI.Model.ImageModel;
 import com.ERP.ERPAPI.Model.Username;
 import com.ERP.ERPAPI.Repository.ImageRepo;
+import lombok.AllArgsConstructor;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @RestController
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*")@AllArgsConstructor
 public class ImageController {
 
     @Autowired
